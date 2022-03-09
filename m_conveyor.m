@@ -15,7 +15,7 @@ V = 3;
 
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
-indx = [1, 2, 3, 4, 5, 6, 7];
+indx = [1, 2, 3, 4, 5, 6, 7, 8];
 
 % ab = inputdlg({'Input min weight','Input max weight'},'Ввод данных', [1 50]);
 % WW = str2double(ab);
