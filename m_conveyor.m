@@ -72,7 +72,7 @@ bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управл�
     'CallBack', {@PushButton5, warningpress}, 'Position', [1.6 1.7 164 38.79 ]);
 
 while (true)
-    f=gcf;
+%     f=gcf;
     
     for i = 1:10000
         
