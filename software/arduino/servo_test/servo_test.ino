@@ -17,11 +17,11 @@ void loop() {
 
   for (pos = 0; pos <= 180; pos += 1) {
     servo1.write(pos);
-    delay (30);
+    delay (15);
   }
   for (pos = 180; pos >= 0; pos -= 1) {
     servo1.write(pos);
-    delay (30);
+    delay (15);
   }
   for (pos = 0; pos <= 180; pos += 1) {
     servo2.write(pos);

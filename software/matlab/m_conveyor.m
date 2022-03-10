@@ -7,7 +7,7 @@ global needspeed
 global warningpress
 
 delete(instrfind)
-s = serialport('COM5', 9600);
+s = serialport('COM4', 9600);
 
 % speed = inputdlg({'Input conveyor speed'},'Ввод данных', [1 50]);
 % V = str2num(cell2mat(speed));
@@ -34,9 +34,8 @@ usertabl = zeros(5);
 stopdistance = zeros(1);
 
 data="";
-
 fig = uifigure('Name','RESULT');
-fig.Position = [50   50   600   500];
+fig.Position = [50   450   400   250];
 ppanel1 = uipanel(fig,'Position',[50 50 140 140]);
 lmp = uilamp(ppanel1,'Position',[20 20 100 100]);
 
@@ -45,6 +44,9 @@ txa1 = uitextarea(ppanel2,'Position',[0 0 90 30],'HorizontalAlignment', 'center'
 
 ppanel3 = uipanel(fig,'Position',[200 200 90 30]);
 txa2 = uitextarea(ppanel3,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
+
+ppanel4 = uipanel(fig,'Position',[300 200 90 30]);
+txa3 = uitextarea(ppanel4,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
 
 f=figure;
 sliderdata=uicontrol(f,'BackgroundColor','#0072BD','style','Slider','Min',0,'Max',1,...
@@ -92,7 +94,7 @@ while (true)
                 start_measurment = 1;
             end
             if ((start_measurment == 1)&&(j<=3))
-                write(s, 2, "string");                
+                write(s, 2, "string");
                 weighttabl(j) = datatabl(i,1)-100;
                 j=j+1;
                 
@@ -105,20 +107,20 @@ while (true)
                 
                 if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
                     write(s, 3, "string");
-                                        wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
-                                        uiwait(wrongcolour,1)
-                                        close (wrongcolour)
-                                        weighttabl(j)=0;
-                                        m=m+1;
+                    wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
+                    uiwait(wrongcolour,1)
+                    close (wrongcolour)
+                    weighttabl(j)=0;
+                    m=m+1;
                 end
                 
-%                 if isempty(colourfind)
-%                     write(s, 4, "string");
-%                 end
-%                 
-%                 if ((answer>WW(1,1)) && (answer<WW(2,1)))
-%                     write(s, 5, "string");
-%                 end
+                %                 if isempty(colourfind)
+                %                     write(s, 4, "string");
+                %                 end
+                %
+                %                 if ((answer>WW(1,1)) && (answer<WW(2,1)))
+                %                     write(s, 5, "string");
+                %                 end
                 
                 j=1;
                 start_measurment=0;
@@ -172,21 +174,21 @@ while (true)
             
             colourfind=find(indx==colour);
             
-            %                 lenghttabl(i,1) = datatabl(i,3);
-            %                 if (lenghttabl(i,1) ~=0)
-            %                     cnt=cnt+1;
-            %                     measurement_end2 = 1;
-            %                 else
-            %                     if measurement_end2 == 1
-            %                         averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
-            %                         cathetus= averagelen.*0.42./0.906307;
-            %                         Objectlenght= cnt.*V-2.*cathetus;
-            %                         disp(['Final lenght: ', num2str(Objectlenght)])
-            %                     end
-            %                     measurement_end2 = 0;
-            %                     cnt =0;
-            %                     Objectlenght =0;
-            
+            lenghttabl(i,1) = datatabl(i,3);
+            if (lenghttabl(i,1) ~=0)
+                cnt=cnt+1;
+                measurement_end2 = 1;
+            else
+                if measurement_end2 == 1
+                    averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
+                    cathetus= averagelen.*0.42./0.906307;
+                    Objectlenght= cnt.*V-2.*cathetus;
+                    txa3.Value=num2str(Objectlenght);
+                end
+                measurement_end2 = 0;
+                cnt =0;
+                Objectlenght =0;
+            end
             
             %сообщение об ошибке, если цвет не соответсвует
             colourfind=find(indx==colour);

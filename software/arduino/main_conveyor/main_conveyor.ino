@@ -74,7 +74,7 @@ void loop() {
         servo2.write(pos);
         delay(15);
       }
-      for (pos = 0; pos <= 30; pos += 1) {
+      for (pos = 0; pos <= 45; pos += 1) {
         servo1.write(pos);
         delay(15);
       }
