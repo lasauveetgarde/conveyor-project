@@ -5,6 +5,7 @@ clear all
 global s
 global needspeed
 global warningpress
+global motorspeed
 
 delete(instrfind)
 s = serialport('COM4', 9600);
@@ -22,7 +23,7 @@ indx = [1, 2, 5, 6, 7];
 WW = [0; 100];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
-    measurement_end2 = 0; needspeed=0; j=1; m=1; weightcnt=0; w=1;
+    measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.23;
 
 
 datatabl=zeros(8); %%все данные с USB-порта
@@ -64,7 +65,7 @@ btn2=uicontrol(pan2,'BackgroundColor',	'green','style','pushbutton',...
 
 pan3 = uipanel(f,'Position',[0.17 0.4 0.2 0.1]);
 btn3=uicontrol(pan3,'style','pushbutton', 'String','Set speed',...
-    'CallBack', {@PushButton3, sliderdata, needspeed}, 'Position', [1.6 1.2 108 38.79 ]);
+    'CallBack', {@PushButton3, sliderdata, needspeed, motorspeed}, 'Position', [1.6 1.2 108 38.79 ]);
 
 pan4 = uipanel(f,'Position',[0.18 0.6 0.3 0.1]);
 btn4=uicontrol(pan4,'style','pushbutton', 'String','Ручное управление',...
@@ -78,7 +79,7 @@ while (true)
     f=gcf;
     
     for i = 1:10000
-        
+
         write(s, 1, "string");
         data = read(s,28,"string");
         datatabl(i,:)=double(split(data))';
@@ -182,7 +183,7 @@ while (true)
                 if measurement_end2 == 1
                     averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
                     cathetus= averagelen.*0.42./0.906307;
-                    Objectlenght= cnt.*V-2.*cathetus;
+                    Objectlenght= cnt.*motorspeed-2.*cathetus;
                     txa3.Value=num2str(Objectlenght);
                 end
                 measurement_end2 = 0;
@@ -206,19 +207,25 @@ end
 
 function PushButton1(src,~)
 global needspeed
+global motorspeed
 needspeed=2;
+motorspeed= 0;
 end
 
 % start
 function PushButton2(src,~)
 global needspeed
+global motorspeed
 needspeed=1;
+motorspeed= needspeed*10*2*3.14*0.05*100/60;
 end
 
 % set speed
 function PushButton3(src,~, sliderdata,~)
 global needspeed
+global motorspeed
 needspeed=sliderdata.Value.*255;
+motorspeed= sliderdata.Value.*10*2*3.14*0.05*100/60;
 end
 
 function PushButton4(src,~,~)
