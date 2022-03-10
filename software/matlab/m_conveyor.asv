@@ -92,8 +92,12 @@ while (true)
                 start_measurment = 1;
             end
             if ((start_measurment == 1)&&(j<=3))
-                write(s, 2, "string");                
+                write(s, 2, "string");
+                
                 weighttabl(j) = datatabl(i,1)-100;
+                
+                % перевод цвета из RGB в HSV
+                
                 j=j+1;
                 
             else
@@ -103,13 +107,13 @@ while (true)
                 txa2.Value=weightanswer;
                 %%отображение цвета и его вывод
                 
-                if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
+                if ((answer<WW(1,1)) || (answer>WW(2,1)))
                     write(s, 3, "string");
-                                        wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
-                                        uiwait(wrongcolour,1)
-                                        close (wrongcolour)
-                                        weighttabl(j)=0;
-                                        m=m+1;
+                    %                     wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
+                    %                     uiwait(wrongcolour,1)
+                    %                     close (wrongcolour)
+                    %                     weighttabl(j)=0;
+                    %                     m=m+1;
                 end
                 
 %                 if isempty(colourfind)
@@ -124,10 +128,10 @@ while (true)
                 start_measurment=0;
             end
             
-            rgbtabl(i, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
-            rgbtabl(i, 2)= (datatabl(i,5)-100)./256;
-            rgbtabl(i, 3)= (datatabl(i,6)-100)./256;
-            hsvtabl(i,:)= rgb2hsv(rgbtabl(i, :)); %%перевод из RGB в HSV
+            rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
+            rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
+            rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
+            hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
             
             %                     usertabl(w, 2) = weighttabl(j);
             %                     usertabl(w, 3) = hsvtabl(j,1);

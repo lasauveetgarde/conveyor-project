@@ -68,7 +68,7 @@ void loop() {
     value = Serial.read();
   }
   if (value == 3) {
-    if (count1 < 1) {
+    if (count1 == 0) {
       for (pos = 180; pos >= 0; pos -= 1) {
         servo1.write(pos);
         servo2.write(pos);
@@ -78,11 +78,11 @@ void loop() {
         servo1.write(pos);
         delay(15);
       }
-      for (pos = 0; pos <= 5; pos += 1) {
+      for (pos = 0; pos <= 1; pos += 1) {
         servo2.write(pos);
         delay(15);
       }
-      count1 = count1 + 1;
+      count1 = 1;
     }
     else {
       count1 = 0;
@@ -92,7 +92,7 @@ void loop() {
   }
 
   if (value == 4) {
-    if (count2 < 1) {
+    if (count2 == 0) {
       for (pos = 180; pos >= 0; pos -= 1) {
         servo2.write(pos);
         servo1.write(pos);
@@ -106,7 +106,7 @@ void loop() {
         servo1.write(pos);
         delay(15);
       }
-      count2 = count2 + 1;
+      count2 = 1;
     }
     else {
       count2 = 0;
@@ -116,7 +116,7 @@ void loop() {
   }
 
   if (value == 5) {
-    if (count3 < 1) {
+    if (count3 == 0) {
       for (pos = 180; pos >= 0; pos -= 1) {
         servo1.write(pos);
         servo1.write(pos);
@@ -127,7 +127,7 @@ void loop() {
         servo1.write(pos);
         delay(15);
       }
-      count3 = count3 + 1;
+      count3 = 1;
     }
     else {
       count3 = 0;
@@ -214,10 +214,6 @@ void loop() {
 
   Serial.print(" "); Serial.print(R, DEC); Serial.print(" "); Serial.print(G, DEC);  Serial.print(" "); Serial.print(B, DEC); Serial.print(" ");
 
-  if (Serial.available() > 0)
-  {
-    value = Serial.read();
-  }
 
   digitalWrite(PIN_TRIG2, LOW);
   delayMicroseconds(5);
@@ -228,7 +224,7 @@ void loop() {
   imptime = pulseIn(PIN_ECHO2, HIGH);
   stopdistance = imptime * 0.034 / 2;
 
-  if ((stopdistance >= 35) || (stopdistance <= 10))
+  if ((stopdistance >= 99) || (stopdistance <= 10))
   {
     Serial.print(99);
     Serial.println(" ");
@@ -239,4 +235,8 @@ void loop() {
     Serial.println(" ");
   }
 
+  if (Serial.available() > 0)
+  {
+    value = Serial.read();
+  }
 }
