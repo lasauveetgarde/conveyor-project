@@ -117,41 +117,7 @@ while (true)
             rgbtabl(i, 3)= (datatabl(i,6)-100)./256;
             hsvtabl(i,:)= rgb2hsv(rgbtabl(i, :)); %%перевод из RGB в HSV
             
-            if ((hsvtabl(i, 1)>0) && (hsvtabl(i, 1)<0.054))
-                txa1.Value='red color';
-                colour=1;
-                lmp.Color = '#92000a';
-            end
-            if ((hsvtabl(i, 1)>0.054) && (hsvtabl(i, 1)<0.1265))
-                txa1.Value='yellow color';
-                colour=2;
-                lmp.Color = '#ffd700';
-            end
-            if ((hsvtabl(i, 1)>0.1265) && (hsvtabl(i, 1)<0.3645))
-                txa1.Value='green color';
-                colour=5;
-                lmp.Color = '#228b22';
-            end
-            if ((hsvtabl(i, 1)>0.3645) && (hsvtabl(i, 1)<0.486))
-                txa1.Value='light blue color';
-                colour=3;
-                lmp.Color = '#6495ed';
-            end
-            if ((hsvtabl(i, 1)>0.486) && (hsvtabl(i, 1)<0.675))
-                txa1.Value='blue color';
-                colour=4;
-                lmp.Color = '#310062';
-            end
-            if ((hsvtabl(i, 1)>0.675) && (hsvtabl(i, 1)<0.7425))
-                txa1.Value='purple color';
-                colour=6;
-                lmp.Color = '#7E2F8E';
-            end
-            if ((hsvtabl(i, 1)>0.7425) && (hsvtabl(i, 1)<0.945))
-                txa1.Value='pink color';
-                colour=7;
-                lmp.Color = '#ffc0cb';
-            end
+            [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,i);
             
             colourfind=find(indx==colour);
             
@@ -217,3 +183,43 @@ function PushButton5(src,~,~)
 global warningpress
 warningpress=0;
 end
+
+function [Value,Txcolor,lmpColor] = what_color (tabl,i)
+if ((tabl(i, 1)>0) && (tabl(i, 1)<0.054))
+    Value='red color';
+    Txcolor=1;
+    lmpColor = '#92000a';
+end
+if ((tabl(i, 1)>0.054) && (tabl(i, 1)<0.1265))
+    Value='yellow color';
+    Txcolor=2;
+    lmpColor = '#ffd700';
+end
+if ((tabl(i, 1)>0.1265) && (tabl(i, 1)<0.3645))
+    Value='green color';
+    Txcolor=5;
+    lmpColor = '#228b22';
+end
+if ((tabl(i, 1)>0.3645) && (tabl(i, 1)<0.486))
+    Value='light blue color';
+    Txcolor=3;
+    lmpColor = '#6495ed';
+end
+if ((tabl(i, 1)>0.486) && (tabl(i, 1)<0.675))
+    Value='blue color';
+    Txcolor=4;
+    lmpColor = '#310062';
+end
+if ((tabl(i, 1)>0.675) && (tabl(i, 1)<0.7425))
+    Value='purple color';
+    Txcolor=6;
+    lmpColor = '#7E2F8E';
+end
+if ((tabl(i, 1)>0.7425) && (tabl(i, 1)<0.945))
+    Value='pink color';
+    Txcolor=7;
+    lmpColor = '#ffc0cb';
+end
+end
+
+
