@@ -50,9 +50,9 @@ ppanel4 = uipanel(fig,'Position',[300 200 90 30]);
 txa3 = uitextarea(ppanel4,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
 
 ppanel5 = uipanel(fig,'Position',[220 20 170 170]);
-kb = uiknob(ppanel5,'continuous','Position',[35 20 100 100]);
+kb = uiknob(ppanel5,'continuous','Position',[35 20 100 100],...
+    'ValueChangedFcn', @(kb,event) knobTurned(kb,motorspeed));
 kb.Limits =[0 6];
-kb.Value = motorspeed;
 
 f=figure('Name','Control Speed', 'NumberTitle', 'Off');
 f.Position = [550   400   550   350];
@@ -102,6 +102,7 @@ while (true)
             end
             if ((start_measurment == 1)&&(j<=3))
                 write(s, 2, "string");
+                motorspeed = 0;
                 weighttabl(j) = datatabl(i,1)-100;
                 j=j+1;           
             else       
@@ -126,8 +127,6 @@ while (true)
             hsvtabl(i,:)= rgb2hsv(rgbtabl(i, :)); %%перевод из RGB в HSV
             
             [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,i);
-            
-            colourfind=find(indx==colour);
             
             lenghttabl(i,1) = datatabl(i,3);
             if (lenghttabl(i,1) ~=0)
@@ -175,11 +174,16 @@ motorspeed= needspeed*10*2*3.14*0.05*100/60;
 end
 
 % set speed
-function PushButton3(src,~, sliderdata,~)
+function PushButton3(src,~, sliderdata,~,~)
 global needspeed
 global motorspeed
 needspeed=sliderdata.Value.*255;
 motorspeed= sliderdata.Value.*10*2*3.14*0.05*100/60;
+end
+
+function knobTurned(kb, ~)
+global motorspeed
+kb.Value=motorspeed;
 end
 
 function PushButton4(src,~,~)
