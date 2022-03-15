@@ -6,6 +6,7 @@ global s
 global needspeed
 global warningpress
 global motorspeed
+global all_color
 
 delete(instrfind)
 s = serialport('COM4', 9600);
@@ -19,7 +20,7 @@ indx = [1, 2, 5, 6, 7];
 WW = [0; 100];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
-    measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.23;
+    measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.2333;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -28,15 +29,16 @@ lenghttabl=zeros(2); %%массив для записи значений дли�
 weighttabl=zeros(1); %%массив для записи значений массы предмета
 usertabl = zeros(5);
 stopdistance = zeros(1);
+all_color = zeros(1,7);
 
 data="";
 
 %result display
-fig = uifigure('Name','RESULT');
+fig = uifigure('Name','Result window');
 fig.Position = [50   450   400   250];
 %color LED
-ppanel1 = uipanel(fig,'Position',[50 50 140 140]);
-lmp = uilamp(ppanel1,'Position',[20 20 100 100]);
+ppanel1 = uipanel(fig,'Position',[50 50 120 120]);
+lmp = uilamp(ppanel1,'Position',[20 20 80 80]);
 %Color text area
 ppanel2 = uipanel(fig,'Position',[100 200 90 30]);
 txa1 = uitextarea(ppanel2,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
@@ -57,9 +59,12 @@ value_speed = uilabel(ppanel5,...
 value_speed_mark = uilabel(ppanel5,...
     'Position',[130 145 50 15],...
     'Text','sm*s');
+
+
 %Controlling display
-f=figure('Name','Control Speed', 'NumberTitle', 'Off');
-f.Position = [550   400   550   350];
+
+f=figure('Name','Control Speed', 'NumberTitle', 'Off','MenuBar', 'none');
+f.Position = [500   400   550   350];
 %Slider to set speed
 sliderdata=uicontrol(f,'BackgroundColor','#0072BD','style','Slider','Min',0,'Max',1,...
     'Value',1,'units','normalized');
@@ -88,11 +93,23 @@ bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управл�
     'CallBack', {@PushButton5, warningpress},...
     'Position', [1.6 1.7 164 38.79 ]);
 
+f2=figure(2);
+f2.Position = [1100   400   350   250];
+result_pie_color=pie(all_color);
+colormap([0.857 0 0;
+    0.9290 0.6940 0.1250;
+    0.3010 0.7450 0.9330;
+    0 0.4470 0.7410;
+    0.4660 0.6740 0.1880;
+    0.4940 0.1840 0.5560;
+    1 0 1;
+    ])
+
 while (true)
     f=gcf;
     
     for i = 1:10000
-        
+        result_pie_color=pie(all_color);
         write(s, 1, "string");
         data = read(s,28,"string");
         datatabl(i,:)=double(split(data))';
@@ -113,7 +130,7 @@ while (true)
                 weighttabl(j) = datatabl(i,1)-100;
                 j=j+1;
             else
-                motorspeed=5.23;
+                motorspeed=5.2333;
                 answer = sum(weighttabl)/3;
                 weightanswer=sprintf(num2str(answer));
                 txa2.Value=weightanswer;
@@ -160,8 +177,8 @@ while (true)
                 %                     %                     uiwait(wrongcolour,1)
                 %                     %                     close (wrongcolour)
             end
-            
         end
+%         disp(all_color);
     end
 end
 
@@ -205,42 +222,47 @@ warningpress=0;
 end
 
 function [Value,Txcolor,lmpColor] = what_color (tabl,i)
+global all_color
 if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.054))
     Value='red color';
     Txcolor=1;
     lmpColor = '#92000a';
+    all_color(1)= all_color(1) + 1;
 elseif ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
     Value='yellow color';
     Txcolor=2;
     lmpColor = '#ffd700';
-
+    all_color(2)= all_color(2) + 1;
 elseif ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
     Value='green color';
     Txcolor=5;
     lmpColor = '#228b22';
-
+    all_color(5)= all_color(5) + 1;
 elseif ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
     Value='light blue color';
     Txcolor=3;
     lmpColor = '#6495ed';
-
+    all_color(3)= all_color(3) + 1;
 elseif ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
     Value='blue color';
     Txcolor=4;
     lmpColor = '#310062';
+    all_color(4)= all_color(4) + 1;
 elseif ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
     Value='purple color';
     Txcolor=6;
     lmpColor = '#7E2F8E';
-
+    all_color(6)= all_color(6) + 1;
 elseif ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.986))
     Value='pink color';
     Txcolor=7;
     lmpColor = '#ffc0cb';
+    all_color(7)= all_color(7) + 1;
 elseif  (tabl(i, 1)<=1)
     Value='red color';
     Txcolor=1;
     lmpColor = '#92000a';
+    all_color(1)= all_color(1) + 1;
 else
     Value='unknown color';
     Txcolor=7;
