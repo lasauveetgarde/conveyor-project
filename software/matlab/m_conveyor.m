@@ -35,49 +35,59 @@ usertabl = zeros(5);
 stopdistance = zeros(1);
 
 data="";
+
+%result display
 fig = uifigure('Name','RESULT');
 fig.Position = [50   450   400   250];
+%color LED
 ppanel1 = uipanel(fig,'Position',[50 50 140 140]);
 lmp = uilamp(ppanel1,'Position',[20 20 100 100]);
-
+%Color text area
 ppanel2 = uipanel(fig,'Position',[100 200 90 30]);
 txa1 = uitextarea(ppanel2,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
-
+%Weight text area
 ppanel3 = uipanel(fig,'Position',[200 200 90 30]);
 txa2 = uitextarea(ppanel3,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
-
+%Lenght text area
 ppanel4 = uipanel(fig,'Position',[300 200 90 30]);
 txa3 = uitextarea(ppanel4,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
-
+%Speed visible
 ppanel5 = uipanel(fig,'Position',[220 20 170 170]);
-kb = uiknob(ppanel5,'continuous','Position',[35 20 100 100],...
+kb = uiknob(ppanel5,'continuous','Position',[35 20 80 80],...
     'ValueChangedFcn', @(kb,event) knobTurned(kb,motorspeed));
-kb.Limits =[0 6];
-
+kb.Limits =[0 5.5];
+value_speed = uilabel(ppanel5,...
+    'Position',[90 145 50 15],...
+    'Text','0');
+value_speed_mark = uilabel(ppanel5,...
+    'Position',[130 145 50 15],...
+    'Text','sm*s');
+%Controlling display
 f=figure('Name','Control Speed', 'NumberTitle', 'Off');
 f.Position = [550   400   550   350];
+%Slider to set speed
 sliderdata=uicontrol(f,'BackgroundColor','#0072BD','style','Slider','Min',0,'Max',1,...
     'Value',1,'units','normalized');
 sliderdata.Position = [0.1 0.1 0.05 0.8];
-
+%Stop button
 pan1 = uipanel(f,'Position',[0.17 0.2 0.2 0.1]);
 btn1=uicontrol(pan1,'BackgroundColor',	'red', 'style','pushbutton',...
     'String','Stop','CallBack',@PushButton1, 'Position', [1.6 1.2 108 38.79 ]);
-
+%Start  with max speed button
 pan2 = uipanel(f,'Position',[0.17 0.3 0.2 0.1]);
 btn2=uicontrol(pan2,'BackgroundColor',	'green','style','pushbutton',...
     'String','Max speed','CallBack', @PushButton2, 'Position', [1.6 1.2 108 38.79 ]);
-
+%Start  with set speed button
 pan3 = uipanel(f,'Position',[0.17 0.4 0.2 0.1]);
 btn3=uicontrol(pan3,'style','pushbutton', 'String','Set speed',...
     'CallBack', {@PushButton3, sliderdata, needspeed, motorspeed},...
     'Position', [1.6 1.2 108 38.79 ]);
-
+%User control button
 pan4 = uipanel(f,'Position',[0.18 0.6 0.3 0.1]);
 btn4=uicontrol(pan4,'style','pushbutton', 'String','Ручное управление',...
     'CallBack', {@PushButton4, warningpress}, ...
     'Position', [1.6 1.7 164 38.79 ]);
-
+%Auto control button
 pan5 = uipanel(f,'Position',[0.53 0.6 0.3 0.1]);
 bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управление',...
     'CallBack', {@PushButton5, warningpress},...
@@ -92,6 +102,7 @@ while (true)
         data = read(s,28,"string");
         datatabl(i,:)=double(split(data))';
         kb.Value=motorspeed;
+        value_speed.Text=num2str(motorspeed);
         if warningpress == 1
             write(s, needspeed, "string");
         else
@@ -103,7 +114,7 @@ while (true)
             end
             if ((start_measurment == 1)&&(j<=3))
                 write(s, 2, "string");
-                motorspeed = 0;
+                motorspeed=0;
                 weighttabl(j) = datatabl(i,1)-100;
                 j=j+1;
             else

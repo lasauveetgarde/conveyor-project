@@ -26,6 +26,9 @@ kb_master = uiknob(fig,...
     'Position',[300 100 60 60],...
     'ValueChangedFcn', @(kb,event) knobTurned_master(kb,lbmaster_value,kb_slave));
 
+while(true)
+    
+end
 
 function knobTurned_master(kb,lbmaster_value,kb_slave)
 global motorspeed
