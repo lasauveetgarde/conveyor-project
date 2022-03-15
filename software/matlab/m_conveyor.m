@@ -134,7 +134,10 @@ while (true)
                 answer = sum(weighttabl)/3;
                 weightanswer=sprintf(num2str(answer));
                 txa2.Value=weightanswer;
-                usertabl(m,1)=answer;
+                usertabl(m,2)=answer;
+%                 time=datetime;
+%                 DateString=datestr(time);
+%                 usertabl (m,1)=DateString;
                 %%отображение цвета и его вывод
                 if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
                     write(s, 3, "string");
