@@ -91,6 +91,7 @@ while (true)
         write(s, 1, "string");
         data = read(s,28,"string");
         datatabl(i,:)=double(split(data))';
+        kb.Value=motorspeed;
         if warningpress == 1
             write(s, needspeed, "string");
         else
@@ -181,10 +182,10 @@ needspeed=sliderdata.Value.*255;
 motorspeed= sliderdata.Value.*10*2*3.14*0.05*100/60;
 end
 
-function knobTurned(kb, ~)
-global motorspeed
-kb.Value=motorspeed;
-end
+% function knobTurned(kb, ~)
+% global motorspeed
+% motorspeed=kb.Value;
+% end
 
 function PushButton4(src,~,~)
 global warningpress
@@ -201,40 +202,42 @@ if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.054))
     Value='red color';
     Txcolor=1;
     lmpColor = '#92000a';
-end
-if ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
+elseif ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
     Value='yellow color';
     Txcolor=2;
     lmpColor = '#ffd700';
-end
-if ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
+
+elseif ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
     Value='green color';
     Txcolor=5;
     lmpColor = '#228b22';
-end
-if ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
+
+elseif ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
     Value='light blue color';
     Txcolor=3;
     lmpColor = '#6495ed';
-end
-if ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
+
+elseif ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
     Value='blue color';
     Txcolor=4;
     lmpColor = '#310062';
-end
-if ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
+elseif ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
     Value='purple color';
     Txcolor=6;
     lmpColor = '#7E2F8E';
-end
-if ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.945))
+
+elseif ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.986))
     Value='pink color';
     Txcolor=7;
     lmpColor = '#ffc0cb';
+elseif  (tabl(i, 1)<=1)
+    Value='red color';
+    Txcolor=1;
+    lmpColor = '#92000a';
 else
     Value='unknown color';
     Txcolor=7;
     lmpColor = '#000000';
-    fprintf('i dont know what is color.\nThe color is %d',tabl(i, 1));
+    fprintf('i dont know what is color.\nThe color is %d\n',tabl(i, 1));
 end
 end
