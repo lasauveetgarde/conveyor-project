@@ -87,7 +87,7 @@ while (true)
     f=gcf;
     
     for i = 1:10000
-
+        
         write(s, 1, "string");
         data = read(s,28,"string");
         datatabl(i,:)=double(split(data))';
@@ -104,20 +104,20 @@ while (true)
                 write(s, 2, "string");
                 motorspeed = 0;
                 weighttabl(j) = datatabl(i,1)-100;
-                j=j+1;           
-            else       
+                j=j+1;
+            else
                 answer = sum(weighttabl)/3;
                 weightanswer=sprintf(num2str(answer));
                 txa2.Value=weightanswer;
                 usertabl(m,1)=answer;
-                %%отображение цвета и его вывод  
+                %%отображение цвета и его вывод
                 if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
                     write(s, 3, "string");
                     wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
                     uiwait(wrongcolour,1)
                     close (wrongcolour)
-%                     weighttabl(j)=0;
-                end   
+                    %                     weighttabl(j)=0;
+                end
                 j=1;
                 start_measurment=0;
             end
@@ -197,41 +197,44 @@ warningpress=0;
 end
 
 function [Value,Txcolor,lmpColor] = what_color (tabl,i)
-if ((tabl(i, 1)>0) && (tabl(i, 1)<0.054))
+if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.054))
     Value='red color';
     Txcolor=1;
     lmpColor = '#92000a';
 end
-if ((tabl(i, 1)>0.054) && (tabl(i, 1)<0.1265))
+if ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
     Value='yellow color';
     Txcolor=2;
     lmpColor = '#ffd700';
 end
-if ((tabl(i, 1)>0.1265) && (tabl(i, 1)<0.3645))
+if ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
     Value='green color';
     Txcolor=5;
     lmpColor = '#228b22';
 end
-if ((tabl(i, 1)>0.3645) && (tabl(i, 1)<0.486))
+if ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
     Value='light blue color';
     Txcolor=3;
     lmpColor = '#6495ed';
 end
-if ((tabl(i, 1)>0.486) && (tabl(i, 1)<0.675))
+if ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
     Value='blue color';
     Txcolor=4;
     lmpColor = '#310062';
 end
-if ((tabl(i, 1)>0.675) && (tabl(i, 1)<0.7425))
+if ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
     Value='purple color';
     Txcolor=6;
     lmpColor = '#7E2F8E';
 end
-if ((tabl(i, 1)>0.7425) && (tabl(i, 1)<0.945))
+if ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.945))
     Value='pink color';
     Txcolor=7;
     lmpColor = '#ffc0cb';
+else
+    Value='unknown color';
+    Txcolor=7;
+    lmpColor = '#000000';
+    fprintf('i dont know what is color.\nThe color is %d',tabl(i, 1));
 end
 end
-
-
