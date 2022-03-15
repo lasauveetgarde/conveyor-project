@@ -10,10 +10,6 @@ global motorspeed
 delete(instrfind)
 s = serialport('COM4', 9600);
 
-% speed = inputdlg({'Input conveyor speed'},'Ввод данных', [1 50]);
-% V = str2num(cell2mat(speed));
-V = 3;
-
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
 indx = [1, 2, 5, 6, 7];
@@ -24,7 +20,6 @@ WW = [0; 100];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
     measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.23;
-
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -118,6 +113,7 @@ while (true)
                 weighttabl(j) = datatabl(i,1)-100;
                 j=j+1;
             else
+                motorspeed=5.23;
                 answer = sum(weighttabl)/3;
                 weightanswer=sprintf(num2str(answer));
                 txa2.Value=weightanswer;
