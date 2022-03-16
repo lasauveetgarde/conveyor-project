@@ -27,10 +27,12 @@ rgbtabl = zeros(3); %%массив для записи значений цвет
 hsvtabl = zeros(3); %%массив для записи значений цвета в HSV в диапазоне 0-1
 lenghttabl=zeros(2); %%массив для записи значений длины предмета
 weighttabl=zeros(1); %%массив для записи значений массы предмета
-usertabl = zeros(5);
+usertabl = cell(5);
+usertabl {1,1}='Time';
+usertabl {1,2}='Weight';
+usertabl {1,3}='Weigрt is';
 stopdistance = zeros(1);
 all_color = zeros(1,7);
-
 data="";
 
 %result display
@@ -106,8 +108,7 @@ colormap([0.857 0 0;
     ])
 
 while (true)
-    f=gcf;
-    
+    f2=gcf;
     for i = 1:10000
         result_pie_color=pie(all_color);
         write(s, 1, "string");
@@ -134,10 +135,8 @@ while (true)
                 answer = sum(weighttabl)/3;
                 weightanswer=sprintf(num2str(answer));
                 txa2.Value=weightanswer;
-                usertabl(m,2)=answer;
-%                 time=datetime;
-%                 DateString=datestr(time);
-%                 usertabl (m,1)=DateString;
+                usertabl {m+1,1}=datestr(now,'HH:MM:SS'); 
+                usertabl{m+1,2}=answer;
                 %%отображение цвета и его вывод
                 if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
                     write(s, 3, "string");
@@ -182,6 +181,7 @@ while (true)
             end
         end
 %         disp(all_color);
+          writecell(usertabl,'usertable.xls')
     end
 end
 
