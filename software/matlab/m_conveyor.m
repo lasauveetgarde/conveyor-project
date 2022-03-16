@@ -95,7 +95,7 @@ bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управл�
     'CallBack', {@PushButton5, warningpress},...
     'Position', [1.6 1.7 164 38.79 ]);
 
-f2=figure(2);
+f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
 f2.Position = [1100   400   350   250];
 result_pie_color=pie(all_color);
 colormap([0.857 0 0;
@@ -104,12 +104,13 @@ colormap([0.857 0 0;
     0 0.4470 0.7410;
     0.4660 0.6740 0.1880;
     0.4940 0.1840 0.5560;
-    1 0 1;
+    0.982 0.668 0.826;
     ])
 
 while (true)
-    f2=gcf;
+%     f=gcf;
     for i = 1:10000
+        figure(2);
         result_pie_color=pie(all_color);
         write(s, 1, "string");
         data = read(s,28,"string");
