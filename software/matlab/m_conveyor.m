@@ -96,8 +96,7 @@ pan5 = uipanel(f,'Position',[0.53 0.6 0.3 0.1]);
 bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управление',...
     'CallBack', {@PushButton5, warningpress},...
     'Position', [1.6 1.7 164 38.79 ]);
-Value='nothing';
-lmpColor = '#000000';
+
 
 f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
 f2.Position = [1100   400   350   250];
@@ -120,6 +119,9 @@ while (true)
     datatabl(i,:)=double(split(data))';
     kb.Value=motorspeed;
     value_speed.Text=num2str(motorspeed);
+    txa1.Value='nothing';
+    lmp.Color = '#000000';
+    
     if warningpress == 1
         write(s, needspeed, "string");
     else
@@ -130,6 +132,7 @@ while (true)
             write(s, 2, "string");
             motorspeed=0;
         end
+        
         while ((start_measurment == 1)&&(j<=3))
             weighttabl(j) = datatabl(i,1)-100;
             rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
@@ -139,6 +142,7 @@ while (true)
             [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,j);
             j=j+1;
         end
+        
         if start_measurment == 1
             m = m + 1;
             motorspeed=5.2333;
@@ -148,6 +152,7 @@ while (true)
             usertabl {m,1}=datestr(now,'HH:MM:SS');
             usertabl{m,2}=answer;
             usertabl{m,3}=txa1.Value;
+            
             %%отображение цвета и его вывод
             if ((answer<WW(1,1)) || (answer>WW(2,1)))
                 %                     write(s, 4, "string");
@@ -194,9 +199,9 @@ while (true)
     end
     
     %         disp(all_color);
-    %           writecell(usertabl,'usertable.xls')
+    %         writecell(usertabl,'usertable.xls')
     
-    i = i + 1
+    i = i + 1;
 end
 
 
