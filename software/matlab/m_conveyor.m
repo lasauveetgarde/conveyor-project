@@ -129,11 +129,11 @@ while (true)
         %масса предмета
         if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
             start_measurment = 1;
-            write(s, 2, "string");
-            motorspeed=0;
+%             write(s, 2, "string");
+%             motorspeed=0;
         end
         
-        while ((start_measurment == 1)&&(j<=3))
+        while ((start_measurment == 1)&&(j<=5))
             weighttabl(j) = datatabl(i,1)-100;
             rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
             rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
@@ -154,13 +154,13 @@ while (true)
             usertabl{m,3}=txa1.Value;
             
             %%отображение цвета и его вывод
-            if ((answer<WW(1,1)) || (answer>WW(2,1)))
-                %                     write(s, 4, "string");
-                wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
-                uiwait(wrongcolour,1)
-                close (wrongcolour)
-                %                     weighttabl(j)=0;
-            end
+%             if ((answer<WW(1,1)) || (answer>WW(2,1))&&(start_measurment==1))
+%                 %                     write(s, 4, "string");
+%                 wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
+%                 uiwait(wrongcolour,1)
+%                 close (wrongcolour)
+%                 %                     weighttabl(j)=0;
+%             end
             j=1;
         end
         
@@ -182,7 +182,7 @@ while (true)
         end
         
         if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1) && start_measurment==1)
-            write(s, 3, "string");
+            write(s, 4, "string");
             start_measurment=0;
         else
             start_measurment=0;
@@ -201,7 +201,7 @@ while (true)
     %         disp(all_color);
     %         writecell(usertabl,'usertable.xls')
     
-    i = i + 1;
+    i = i + 1
 end
 
 

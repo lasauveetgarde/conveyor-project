@@ -10,8 +10,6 @@ Servo servo2;
 const int pin_servo1 = 9;
 const int pin_servo2 = 10;
 const int angle_max = 180;
-//int angle = 0; //переменная, хранящая значение угла поворота
-//int dir = 1; //направление вращения
 int count1 = 0;
 int count2 = 0;
 int count3 = 0;
@@ -172,7 +170,7 @@ void loop() {
   G = g + 100;
   B = b + 100;
 
-  w1 = scale.get_units(10);
+  w1 = scale.get_units(1);
   w2 = scale.get_units();
   while (abs(w1 - w2) > 10)
   {
