@@ -61,11 +61,14 @@ void setup(void) {
 }
 
 void loop() {
+  if (Serial.available() > 0)
+  {
+    value = Serial.read();
+  }
 
   if (value == 1) {
     motor.forward();
     motor.setSpeed(255);
-    value = Serial.read();
   }
   if (value == 3) {
     if (count1 == 0) {
@@ -139,12 +142,10 @@ void loop() {
   if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5)) {
     motor.forward();
     motor.setSpeed(value);
-    value = Serial.read();
   }
 
   if (value == 2) {
     motor.stop();
-    value = Serial.read();
   }
 
 
@@ -235,8 +236,4 @@ void loop() {
     Serial.println(" ");
   }
 
-  if (Serial.available() > 0)
-  {
-    value = Serial.read();
-  }
 }

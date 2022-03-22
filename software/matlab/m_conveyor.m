@@ -20,7 +20,7 @@ indx = [1, 2, 5, 6, 7];
 WW = [0; 100];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0;start_measurment1=0; cnt=0;...
-    measurement_end2 = 0; needspeed=1; j=1; m=2; motorspeed=5.2333; l=1; n=1;
+    measurement_end2 = 0; needspeed=1; i = 1; j=1; m=2; motorspeed=5.2333;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -112,89 +112,91 @@ colormap([0.857 0 0;
     ])
 
 while (true)
-%     f=gcf;
-    for i = 1:10000
-        Value='nothing';
-        lmpColor = '#000000';
-        figure(2);
-        result_pie_color=pie(all_color);
-        write(s, 1, "string");
-        data = read(s,28,"string");
-        datatabl(i,:)=double(split(data))';
-        kb.Value=motorspeed;
-        value_speed.Text=num2str(motorspeed);
-        if warningpress == 1
-            write(s, needspeed, "string");
-        else
-            stopdistance(i) = datatabl(i,7);
-            %масса предмета
-            if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
-                start_measurment = 1;
-            end
-            if ((start_measurment == 1)&&(j<=3))
-                write(s, 2, "string");
-                motorspeed=0;
-                weighttabl(j) = datatabl(i,1)-100;
-                rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
-                rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
-                rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
-                hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
-                [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,j);
-                j=j+1;
-            elseif j>3
-                motorspeed=5.2333;
-                answer = sum(weighttabl)/3;
-                weightanswer=sprintf(num2str(answer));
-                txa2.Value=weightanswer;
-                usertabl {m,1}=datestr(now,'HH:MM:SS'); 
-                usertabl{m,2}=answer;
-                usertabl{m,3}=txa1.Value;
-                %%отображение цвета и его вывод
-                if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
-%                     write(s, 4, "string"); 
-                    wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
-                    uiwait(wrongcolour,1)
-                    close (wrongcolour)
-                    %                     weighttabl(j)=0;
-                end
-                m = m + 1;
-                j=1;
-                start_measurment=0;
-            end
 
-            lenghttabl(i,1) = datatabl(i,3);
-            if (lenghttabl(i,1) ~=0)
-                cnt=cnt+1;
-                measurement_end2 = 1;
-            else
-                if measurement_end2 == 1
-                    averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
-                    cathetus= averagelen.*0.42./0.906307;
-                    Objectlenght= cnt.*motorspeed-2.*cathetus;
-                    txa3.Value=num2str(Objectlenght);
-                    usertabl{m,4}=txa3.Value;
-                end
-                measurement_end2 = 0;
-                cnt =0;
-                Objectlenght =0;
+    figure(2);
+    result_pie_color=pie(all_color);
+    write(s, 1, "string");
+    data = read(s,28,"string");
+    datatabl(i,:)=double(split(data))';
+    kb.Value=motorspeed;
+    value_speed.Text=num2str(motorspeed);
+    if warningpress == 1
+        write(s, needspeed, "string");
+    else
+        stopdistance(i) = datatabl(i,7);
+        %масса предмета
+        if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
+            start_measurment = 1;
+            write(s, 2, "string");
+            motorspeed=0;
+        end
+        while ((start_measurment == 1)&&(j<=3))
+            weighttabl(j) = datatabl(i,1)-100;
+            rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
+            rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
+            rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
+            hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
+            [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,j);
+            j=j+1;
+        end
+        if start_measurment == 1
+            m = m + 1;
+            motorspeed=5.2333;
+            answer = sum(weighttabl)/3;
+            weightanswer=sprintf(num2str(answer));
+            txa2.Value=weightanswer;
+            usertabl {m,1}=datestr(now,'HH:MM:SS');
+            usertabl{m,2}=answer;
+            usertabl{m,3}=txa1.Value;
+            %%отображение цвета и его вывод
+            if ((answer<WW(1,1)) || (answer>WW(2,1)))
+                %                     write(s, 4, "string");
+                wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
+                uiwait(wrongcolour,1)
+                close (wrongcolour)
+                %                     weighttabl(j)=0;
             end
-            
-            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))
-                write(s, 3, "string");  
-            end
-%             colourfind=find(indx==colour);
-%             if isempty(colourfind)
-%                 write(s, 4, "string");
-%             end
-%             if ((str2double(usertabl{m+1,1})>WW(1,1))&&(str2double(usertabl{m+1,1})<WW(1,2))&& ~isempty(colourfind))
-%                 write(s, 5, "string");
-%             end
-            
+            j=1;
         end
         
-%         disp(all_color);
-%           writecell(usertabl,'usertable.xls')
+        lenghttabl(i,1) = datatabl(i,3);
+        if (lenghttabl(i,1) ~=0)
+            cnt=cnt+1;
+            measurement_end2 = 1;
+        else
+            if measurement_end2 == 1
+                averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
+                cathetus= averagelen.*0.42./0.906307;
+                Objectlenght= cnt.*motorspeed-2.*cathetus;
+                txa3.Value=num2str(Objectlenght);
+                usertabl{m,4}=txa3.Value;
+            end
+            measurement_end2 = 0;
+            cnt =0;
+            Objectlenght =0;
+        end
+        
+        if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1) && start_measurment==1)
+            write(s, 3, "string");
+            start_measurment=0;
+        else
+            start_measurment=0;
+        end
+        
+        %             colourfind=find(indx==colour);
+        %             if isempty(colourfind)
+        %                 write(s, 4, "string");
+        %             end
+        %             if ((str2double(usertabl{m+1,1})>WW(1,1))&&(str2double(usertabl{m+1,1})<WW(1,2))&& ~isempty(colourfind))
+        %                 write(s, 5, "string");
+        %             end
+        
     end
+    
+    %         disp(all_color);
+    %           writecell(usertabl,'usertable.xls')
+    
+    i = i + 1
 end
 
 
