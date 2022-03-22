@@ -19,8 +19,8 @@ indx = [1, 2, 5, 6, 7];
 % WW = str2double(ab);
 WW = [0; 100];
 
-k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
-    measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.2333;
+k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0;start_measurment1=0; cnt=0;...
+    measurement_end2 = 0; needspeed=1; j=1; m=1; motorspeed=5.2333; l=1; n=1;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -30,7 +30,7 @@ weighttabl=zeros(1); %%массив для записи значений мас�
 usertabl = cell(5);
 usertabl {1,1}='Time';
 usertabl {1,2}='Weight';
-usertabl {1,3}='Weigрt is';
+usertabl {1,3}='Color';
 stopdistance = zeros(1);
 all_color = zeros(1,7);
 data="";
@@ -94,6 +94,8 @@ pan5 = uipanel(f,'Position',[0.53 0.6 0.3 0.1]);
 bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управление',...
     'CallBack', {@PushButton5, warningpress},...
     'Position', [1.6 1.7 164 38.79 ]);
+Value='nothing';
+lmpColor = '#000000';
 
 f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
 f2.Position = [1100   400   350   250];
@@ -110,6 +112,8 @@ colormap([0.857 0 0;
 while (true)
 %     f=gcf;
     for i = 1:10000
+        Value='nothing';
+        lmpColor = '#000000';
         figure(2);
         result_pie_color=pie(all_color);
         write(s, 1, "string");
@@ -122,7 +126,7 @@ while (true)
         else
             stopdistance(i) = datatabl(i,7);
             %масса предмета
-            if ((stopdistance(i)>=15)&&(stopdistance(i)<=20)&& (start_measurment==0))
+            if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
                 start_measurment = 1;
                 m=m+1;
             end
@@ -130,6 +134,10 @@ while (true)
                 write(s, 2, "string");
                 motorspeed=0;
                 weighttabl(j) = datatabl(i,1)-100;
+                rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
+                rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
+                rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
+                hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
                 j=j+1;
             else
                 motorspeed=5.2333;
@@ -138,9 +146,11 @@ while (true)
                 txa2.Value=weightanswer;
                 usertabl {m+1,1}=datestr(now,'HH:MM:SS'); 
                 usertabl{m+1,2}=answer;
+                [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,j);
+                usertabl{m+1,3}=txa1.Value;
                 %%отображение цвета и его вывод
                 if ((answer<WW(1,1)) || (answer>WW(2,1)) && (start_measurment == 1))
-                    write(s, 3, "string");
+%                     write(s, 3, "string");
                     wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
                     uiwait(wrongcolour,1)
                     close (wrongcolour)
@@ -149,12 +159,7 @@ while (true)
                 j=1;
                 start_measurment=0;
             end
-            rgbtabl(i, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
-            rgbtabl(i, 2)= (datatabl(i,5)-100)./256;
-            rgbtabl(i, 3)= (datatabl(i,6)-100)./256;
-            hsvtabl(i,:)= rgb2hsv(rgbtabl(i, :)); %%перевод из RGB в HSV
-            
-            [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,i);
+
             
             lenghttabl(i,1) = datatabl(i,3);
             if (lenghttabl(i,1) ~=0)
@@ -173,16 +178,16 @@ while (true)
             end
             
             %сообщение об ошибке, если цвет не соответсвует
-            colourfind=find(indx==colour);
-            if isempty(colourfind)
-                write(s, 4, "string")
-                %                     %                     wrongcolour = warndlg('Объект не того цвета ','Предупреждение ');
-                %                     %                     uiwait(wrongcolour,1)
-                %                     %                     close (wrongcolour)
-            end
+%             colourfind=find(indx==colour);
+%             if isempty(colourfind)
+%                 write(s, 4, "string")
+%                 %                     %                     wrongcolour = warndlg('Объект не того цвета ','Предупреждение ');
+%                 %                     %                     uiwait(wrongcolour,1)
+%                 %                     %                     close (wrongcolour)
+%             end
         end
 %         disp(all_color);
-          writecell(usertabl,'usertable.xls')
+%           writecell(usertabl,'usertable.xls')
     end
 end
 
