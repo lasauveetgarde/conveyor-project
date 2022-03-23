@@ -56,6 +56,8 @@ void setup(void) {
 
   servo1.attach(pin_servo1);
   servo2.attach(pin_servo2);
+
+
 }
 
 void loop() {
@@ -86,7 +88,6 @@ void loop() {
       count1 = 1;
     }
     else {
-      count1 = 0;
       motor.forward();
       motor.setSpeed(255);
     }
@@ -110,7 +111,7 @@ void loop() {
       count2 = 1;
     }
     else {
-      count2 = 0;
+      
       motor.forward();
       motor.setSpeed(255);
     }
@@ -144,8 +145,9 @@ void loop() {
 
   if (value == 2) {
     motor.stop();
+    count1 = 0;
+    count2 = 0;
   }
-
 
   uint16_t red, green, blue, clear;
   tcs.getRawData(&red, &green, &blue, &clear);

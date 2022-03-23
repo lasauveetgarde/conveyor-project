@@ -9,7 +9,7 @@ global motorspeed
 global all_color
 
 delete(instrfind)
-s = serialport('COM4', 9600);
+s = serialport('COM6', 9600);
 
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
@@ -100,7 +100,9 @@ bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управл�
 
 f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
 f2.Position = [1100   400   350   250];
-result_pie_color=pie(all_color);
+t = tiledlayout(1,1,'TileSpacing','compact');
+ax1 = nexttile;
+% result_pie_color=pie(all_color);
 colormap([0.857 0 0;
     0.9290 0.6940 0.1250;
     0.3010 0.7450 0.9330;
@@ -110,11 +112,14 @@ colormap([0.857 0 0;
     0.982 0.668 0.826;
     ])
 
-while (true)
+write(s, 1, "string");
+pause(2)
+write(s, 1, "string");
 
-    figure(2);
+while (true) 
+%     figure(f2);
     result_pie_color=pie(all_color);
-    write(s, 1, "string");
+    pie(ax1,all_color)
     data = read(s,28,"string");
     datatabl(i,:)=double(split(data))';
     kb.Value=motorspeed;
@@ -129,11 +134,11 @@ while (true)
         %масса предмета
         if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
             start_measurment = 1;
-%             write(s, 2, "string");
-%             motorspeed=0;
+            write(s, 2, "string");
+            motorspeed=0;
         end
         
-        while ((start_measurment == 1)&&(j<=5))
+        if ((start_measurment == 1)&&(j<=15))
             weighttabl(j) = datatabl(i,1)-100;
             rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
             rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
@@ -143,10 +148,10 @@ while (true)
             j=j+1;
         end
         
-        if start_measurment == 1
+        if (start_measurment == 1 && j>15)
             m = m + 1;
             motorspeed=5.2333;
-            answer = sum(weighttabl)/3;
+            answer = sum(weighttabl)/15;
             weightanswer=sprintf(num2str(answer));
             txa2.Value=weightanswer;
             usertabl {m,1}=datestr(now,'HH:MM:SS');
@@ -161,7 +166,8 @@ while (true)
 %                 close (wrongcolour)
 %                 %                     weighttabl(j)=0;
 %             end
-            j=1;
+            
+            write(s, 1, "string");
         end
         
         lenghttabl(i,1) = datatabl(i,3);
@@ -180,12 +186,25 @@ while (true)
             cnt =0;
             Objectlenght =0;
         end
-        
-        if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1) && start_measurment==1)
-            write(s, 4, "string");
-            start_measurment=0;
-        else
-            start_measurment=0;
+        if start_measurment==1 && j>15
+            
+            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))
+                write(s, 3, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
+            
+            if (usertabl{m,2}>WW(1,1))&&(usertabl{m,2}<WW(2,1))
+                write(s, 4, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
         end
         
         %             colourfind=find(indx==colour);
