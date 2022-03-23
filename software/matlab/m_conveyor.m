@@ -19,6 +19,10 @@ indx = [1, 2, 5, 6, 7];
 % WW = str2double(ab);
 WW = [0; 100];
 
+% cd = inputdlg({'Input min lenght','Input max lenght'},'Ввод данных', [1 50]);
+% LL = str2double(cd);
+LL = [0; 20];
+
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0;start_measurment1=0; cnt=0;...
     measurement_end2 = 0; needspeed=1; i = 1; j=1; m=2; motorspeed=5.2333;
 
@@ -40,13 +44,15 @@ data="";
 
 %result display
 fig = uifigure('Name','Result window');
-fig.Position = [50   450   400   250];
+fig.Position = [10   400   500   320];
 %color LED
 ppanel1 = uipanel(fig,'Position',[50 50 120 120]);
 lmp = uilamp(ppanel1,'Position',[20 20 80 80]);
+lmp.Color = '#000000';
 %Color text area
 ppanel2 = uipanel(fig,'Position',[100 200 90 30]);
 txa1 = uitextarea(ppanel2,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
+txa1.Value='nothing';
 %Weight text area
 ppanel3 = uipanel(fig,'Position',[200 200 90 30]);
 txa2 = uitextarea(ppanel3,'Position',[0 0 90 30],'HorizontalAlignment', 'center');
@@ -64,12 +70,22 @@ value_speed = uilabel(ppanel5,...
 value_speed_mark = uilabel(ppanel5,...
     'Position',[130 145 50 15],...
     'Text','sm*s');
-
-
+ppanel5 = uipanel(fig,'Position',[10 250 140 30]);
+txa4 = uitextarea(ppanel5,'Position',[20 0 140 30],'HorizontalAlignment', 'center');
+lmp2 = uilamp(ppanel5,'Position',[3 5 17 17]);
+lmp2.Color = '#000000';
+ppanel6 = uipanel(fig,'Position',[160 250 145 30]);
+txa5 = uitextarea(ppanel6,'Position',[20 0 140 30],'HorizontalAlignment', 'center');
+lmp3 = uilamp(ppanel6,'Position',[3 5 17 17]);
+lmp3.Color = '#000000';
+ppanel7 = uipanel(fig,'Position',[315 250 150 30]);
+txa6 = uitextarea(ppanel7,'Position',[20 0 140 30],'HorizontalAlignment', 'center');
+lmp4 = uilamp(ppanel7,'Position',[3 5 17 17]);
+lmp4.Color = '#000000';
 %Controlling display
 
 f=figure('Name','Control Speed', 'NumberTitle', 'Off','MenuBar', 'none');
-f.Position = [500   400   550   350];
+f.Position = [525   400   550   350];
 %Slider to set speed
 sliderdata=uicontrol(f,'BackgroundColor','#0072BD','style','Slider','Min',0,'Max',1,...
     'Value',1,'units','normalized');
@@ -117,8 +133,8 @@ write(s, 1, "string");
 pause(2)
 write(s, 1, "string");
 
-while (true) 
-%     figure(f2);
+while (true)
+    figure(f2);
     result_pie_color=pie(all_color);
     pie(ax1,all_color)
     data = read(s,28,"string");
@@ -165,15 +181,24 @@ while (true)
             usertabl{m,2}=answer;
             usertabl{m,3}=txa1.Value;
             %отображение цвета и его вывод
-%             if ((answer<WW(1,1)) || (answer>WW(2,1))&&(start_measurment==1))
-%                 wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
-%                 uiwait(wrongcolour,1)
-%                 close (wrongcolour)
-%             end
-            
+            if ((answer<WW(1,1)) || (answer>WW(2,1))&&(start_measurment==1))
+                txa4.Value  = ('Объект не того веса ');
+                lmp2.Color = '#92000a';
+            else
+                txa4.Value  = ('Объект того веса ');
+                lmp2.Color = '#228b22';
+            end
+            colourfind=find(indx==colour);
+            if isempty(colourfind)
+                txa5.Value  = ('Объект не того цвета ');
+                lmp3.Color = '#92000a';
+            else
+                txa5.Value  = ('Объект того цвета ');
+                lmp3.Color = '#228b22';
+            end
             write(s, 1, "string");
         end
-
+        
         lenghttabl(i,1) = datatabl(i,3);
         if (lenghttabl(i,1) ~=0)
             cnt=cnt+1;
@@ -182,9 +207,19 @@ while (true)
             if measurement_end2 == 1
                 averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
                 cathetus= averagelen.*0.42./0.906307;
-                Objectlenght= cnt.*motorspeed-2.*cathetus;
+                Objectlenght= cnt.*motorspeed/5.5-2.*cathetus;
+                if Objectlenght<0
+                    Objectlenght=0;
+                end
                 txa3.Value=num2str(Objectlenght);
                 usertabl{m,4}=txa3.Value;
+                if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1))&&(measurement_end2==1))
+                    txa6.Value  = ('Объект не той длины ');
+                    lmp4.Color = '#92000a';
+                else
+                    txa6.Value  = ('Объект той длины ');
+                    lmp4.Color = '#228b22';
+                end
             end
             measurement_end2 = 0;
             cnt =0;
@@ -192,7 +227,8 @@ while (true)
         end
         if start_measurment==1 && j>15
             
-            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))
+            %не тот вес, цвет тот. первая серва в положение 45
+            if ((usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1)))&& (~isempty(colourfind))
                 write(s, 3, "string");
                 start_measurment=0;
                 j=1;
@@ -200,8 +236,8 @@ while (true)
                 start_measurment=0;
                 j=1;
             end
-            
-            if (usertabl{m,2}>WW(1,1))&&(usertabl{m,2}<WW(2,1))
+            %не тот цвет, вес тот. вторая серва в положение 120
+            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<WW(2,1))&& (isempty(colourfind))
                 write(s, 4, "string");
                 start_measurment=0;
                 j=1;
@@ -209,22 +245,29 @@ while (true)
                 start_measurment=0;
                 j=1;
             end
+            % и вес и цвет тот. две сервы в 0
+            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<WW(2,1))&& (~isempty(colourfind))
+                write(s, 5, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
+            % и вес и цвет не тот. первая серва в 120
+            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))&& (isempty(colourfind))
+                write(s, 6, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
+            
         end
-        
-        %             colourfind=find(indx==colour);
-        %             if isempty(colourfind)
-        %                 write(s, 4, "string");
-        %             end
-        %             if ((str2double(usertabl{m+1,1})>WW(1,1))&&(str2double(usertabl{m+1,1})<WW(1,2))&& ~isempty(colourfind))
-        %                 write(s, 5, "string");
-        %             end
-        
     end
-    
-    %         disp(all_color);
-    %         writecell(usertabl,'usertable.xls')
-    
-    i = i + 1
+    i = i + 1;
+%     writecell(usertabl,'usertable.xls')
 end
 
 
@@ -251,10 +294,6 @@ needspeed=sliderdata.Value.*255;
 motorspeed= sliderdata.Value.*10*2*3.14*0.05*100/60;
 end
 
-% function knobTurned(kb, ~)
-% global motorspeed
-% motorspeed=kb.Value;
-% end
 
 function PushButton4(src,~,~)
 global warningpress

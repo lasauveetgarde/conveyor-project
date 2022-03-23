@@ -13,6 +13,7 @@ const int angle_max = 180;
 int count1 = 0;
 int count2 = 0;
 int count3 = 0;
+int count4 = 0;
 int pos = 0;
 
 #define PIN_TRIG1 12
@@ -131,14 +132,34 @@ void loop() {
       }
       count3 = 1;
     }
-    else {
-      count3 = 0;
+    else { 
       motor.forward();
       motor.setSpeed(255);
     }
   }
-
-  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5)) {
+  if (value == 6) {
+    if (count4 == 0) {
+      for (pos = 180; pos >= 0; pos -= 1) {
+        servo1.write(pos);
+        servo2.write(pos);
+        delay(15);
+      }
+      for (pos = 0; pos <= 120; pos += 1) {
+        servo1.write(pos);
+        delay(15);
+      }
+      for (pos = 0; pos <= 1; pos += 1) {
+        servo2.write(pos);
+        delay(15);
+      }
+      count4 = 1;
+    }
+    else {
+      motor.forward();
+      motor.setSpeed(255);
+    }
+  }
+  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5)&& (value != 6)) {
     motor.forward();
     motor.setSpeed(value);
   }
@@ -147,6 +168,8 @@ void loop() {
     motor.stop();
     count1 = 0;
     count2 = 0;
+    count3 = 0;
+    count4 = 0;
   }
 
   uint16_t red, green, blue, clear;
