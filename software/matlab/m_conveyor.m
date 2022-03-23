@@ -27,6 +27,7 @@ rgbtabl = zeros(3); %%массив для записи значений цвет
 hsvtabl = zeros(3); %%массив для записи значений цвета в HSV в диапазоне 0-1
 lenghttabl=zeros(2); %%массив для записи значений длины предмета
 weighttabl=zeros(1); %%массив для записи значений массы предмета
+colorval = zeros(1);
 usertabl = cell(5);
 usertabl(:,:) = {0};
 usertabl {1,1}='Time';
@@ -100,7 +101,9 @@ bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управл�
 
 f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
 f2.Position = [1100   400   350   250];
-result_pie_color=pie(all_color);
+t = tiledlayout(1,1,'TileSpacing','compact');
+ax1 = nexttile;
+% result_pie_color=pie(all_color);
 colormap([0.857 0 0;
     0.9290 0.6940 0.1250;
     0.3010 0.7450 0.9330;
@@ -110,11 +113,14 @@ colormap([0.857 0 0;
     0.982 0.668 0.826;
     ])
 
-while (true)
+write(s, 1, "string");
+pause(2)
+write(s, 1, "string");
 
-    figure(2);
+while (true) 
+%     figure(f2);
     result_pie_color=pie(all_color);
-    write(s, 1, "string");
+    pie(ax1,all_color)
     data = read(s,28,"string");
     datatabl(i,:)=double(split(data))';
     kb.Value=motorspeed;
@@ -129,41 +135,43 @@ while (true)
         %масса предмета
         if ((stopdistance(i)>=10)&&(stopdistance(i)<=15)&& (start_measurment==0))
             start_measurment = 1;
-%             write(s, 2, "string");
-%             motorspeed=0;
+            write(s, 2, "string");
+            motorspeed=0;
         end
         
-        while ((start_measurment == 1)&&(j<=5))
+        if ((start_measurment == 1)&&(j<=15))
             weighttabl(j) = datatabl(i,1)-100;
             rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
             rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
             rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
             hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
-            [txa1.Value,colour,lmp.Color]=what_color(hsvtabl,j);
+            [colour]=what_color(hsvtabl,j);
+            colorval(j) = colour;
             j=j+1;
         end
         
-        if start_measurment == 1
+        if (start_measurment == 1 && j>15)
             m = m + 1;
             motorspeed=5.2333;
-            answer = sum(weighttabl)/3;
+            answer = sum(weighttabl)/15;
             weightanswer=sprintf(num2str(answer));
             txa2.Value=weightanswer;
+            foundcolor = sum(colorval)/15;
+            truecolor = round(foundcolor);
+            [txa1.Value,lmp.Color]=true_color(truecolor);
             usertabl {m,1}=datestr(now,'HH:MM:SS');
             usertabl{m,2}=answer;
             usertabl{m,3}=txa1.Value;
-            
-            %%отображение цвета и его вывод
+            %отображение цвета и его вывод
 %             if ((answer<WW(1,1)) || (answer>WW(2,1))&&(start_measurment==1))
-%                 %                     write(s, 4, "string");
 %                 wrongcolour = warndlg('Объект не того веса ','Предупреждение ');
 %                 uiwait(wrongcolour,1)
 %                 close (wrongcolour)
-%                 %                     weighttabl(j)=0;
 %             end
-            j=1;
+            
+            write(s, 1, "string");
         end
-        
+
         lenghttabl(i,1) = datatabl(i,3);
         if (lenghttabl(i,1) ~=0)
             cnt=cnt+1;
@@ -180,12 +188,25 @@ while (true)
             cnt =0;
             Objectlenght =0;
         end
-        
-        if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1) && start_measurment==1)
-            write(s, 4, "string");
-            start_measurment=0;
-        else
-            start_measurment=0;
+        if start_measurment==1 && j>15
+            
+            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))
+                write(s, 3, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
+            
+            if (usertabl{m,2}>WW(1,1))&&(usertabl{m,2}<WW(2,1))
+                write(s, 4, "string");
+                start_measurment=0;
+                j=1;
+            else
+                start_measurment=0;
+                j=1;
+            end
         end
         
         %             colourfind=find(indx==colour);
@@ -243,52 +264,57 @@ global warningpress
 warningpress=0;
 end
 
-function [Value,Txcolor,lmpColor] = what_color (tabl,i)
-global all_color
+function [Txcolor] = what_color (tabl,i)
 if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.054))
-    Value='red color';
     Txcolor=1;
+elseif ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
+    Txcolor=2;
+elseif ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
+    Txcolor=5;
+elseif ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
+    Txcolor=3;
+elseif ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
+    Txcolor=4;
+elseif ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
+    Txcolor=6;
+elseif ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.986))
+    Txcolor=7;
+elseif  (tabl(i, 1)<=1)
+    Txcolor=1;
+else
+    Txcolor=7;
+end
+end
+
+function [Value, lmpColor] = true_color(fcolor)
+global all_color
+if (fcolor==1)
+    Value='red color';
     lmpColor = '#92000a';
     all_color(1)= all_color(1) + 1;
-elseif ((tabl(i, 1)>0.054) && (tabl(i, 1)<=0.1265))
+elseif (fcolor==2)
     Value='yellow color';
-    Txcolor=2;
     lmpColor = '#ffd700';
     all_color(2)= all_color(2) + 1;
-elseif ((tabl(i, 1)>0.1265) && (tabl(i, 1)<=0.3645))
+elseif (fcolor==5)
     Value='green color';
-    Txcolor=5;
     lmpColor = '#228b22';
     all_color(5)= all_color(5) + 1;
-elseif ((tabl(i, 1)>0.3645) && (tabl(i, 1)<=0.486))
+elseif (fcolor==3)
     Value='light blue color';
-    Txcolor=3;
     lmpColor = '#6495ed';
     all_color(3)= all_color(3) + 1;
-elseif ((tabl(i, 1)>0.486) && (tabl(i, 1)<=0.675))
+elseif (fcolor==4)
     Value='blue color';
-    Txcolor=4;
     lmpColor = '#310062';
     all_color(4)= all_color(4) + 1;
-elseif ((tabl(i, 1)>0.675) && (tabl(i, 1)<=0.7425))
+elseif (fcolor==6)
     Value='purple color';
-    Txcolor=6;
     lmpColor = '#7E2F8E';
     all_color(6)= all_color(6) + 1;
-elseif ((tabl(i, 1)>0.7425) && (tabl(i, 1)<=0.986))
+elseif (fcolor==7)
     Value='pink color';
-    Txcolor=7;
     lmpColor = '#ffc0cb';
     all_color(7)= all_color(7) + 1;
-elseif  (tabl(i, 1)<=1)
-    Value='red color';
-    Txcolor=1;
-    lmpColor = '#92000a';
-    all_color(1)= all_color(1) + 1;
-else
-    Value='unknown color';
-    Txcolor=7;
-    lmpColor = '#000000';
-    fprintf('i dont know what is color.\nThe color is %d\n',tabl(i, 1));
 end
 end
