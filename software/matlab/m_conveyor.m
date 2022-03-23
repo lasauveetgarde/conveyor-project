@@ -9,7 +9,7 @@ global motorspeed
 global all_color
 
 delete(instrfind)
-s = serialport('COM6', 9600);
+s = serialport('COM4', 9600);
 
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
@@ -153,12 +153,14 @@ while (true)
         if (start_measurment == 1 && j>15)
             m = m + 1;
             motorspeed=5.2333;
+            
             answer = sum(weighttabl)/15;
-            weightanswer=sprintf(num2str(answer));
+            weightanswer=sprintf(num2str(sum(weighttabl)/15));
             txa2.Value=weightanswer;
-            foundcolor = sum(colorval)/15;
-            truecolor = round(foundcolor);
+            
+            truecolor = mode(colorval);
             [txa1.Value,lmp.Color]=true_color(truecolor);
+            
             usertabl {m,1}=datestr(now,'HH:MM:SS');
             usertabl{m,2}=answer;
             usertabl{m,3}=txa1.Value;
