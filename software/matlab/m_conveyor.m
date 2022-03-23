@@ -9,7 +9,7 @@ global motorspeed
 global all_color
 
 delete(instrfind)
-s = serialport('COM4', 9600);
+s = serialport('COM6', 9600);
 
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
