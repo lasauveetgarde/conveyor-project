@@ -57,7 +57,8 @@ void setup(void) {
 
   servo1.attach(pin_servo1);
   servo2.attach(pin_servo2);
-
+  servo1.write(0);
+  servo1.write(0);
 
 }
 
@@ -73,19 +74,8 @@ void loop() {
   }
   if (value == 3) {
     if (count1 == 0) {
-      for (pos = 180; pos >= 0; pos -= 1) {
-        servo1.write(pos);
-        servo2.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 45; pos += 1) {
-        servo1.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 1; pos += 1) {
-        servo2.write(pos);
-        delay(15);
-      }
+      servo1.write(45);
+      servo2.write(0);
       count1 = 1;
     }
     else {
@@ -96,62 +86,30 @@ void loop() {
 
   if (value == 4) {
     if (count2 == 0) {
-      for (pos = 180; pos >= 0; pos -= 1) {
-        servo2.write(pos);
-        servo1.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 120; pos += 1) {
-        servo2.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 5; pos += 1) {
-        servo1.write(pos);
-        delay(15);
-      }
+      servo2.write(120);
+      servo1.write(0);
       count2 = 1;
     }
     else {
-      
       motor.forward();
       motor.setSpeed(255);
     }
   }
-
   if (value == 5) {
     if (count3 == 0) {
-      for (pos = 180; pos >= 0; pos -= 1) {
-        servo1.write(pos);
-        servo1.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 5; pos += 1) {
-        servo1.write(pos);
-        servo1.write(pos);
-        delay(15);
-      }
+      servo1.write(0);
+      servo2.write(0);
       count3 = 1;
     }
-    else { 
+    else {
       motor.forward();
       motor.setSpeed(255);
     }
   }
   if (value == 6) {
     if (count4 == 0) {
-      for (pos = 180; pos >= 0; pos -= 1) {
-        servo1.write(pos);
-        servo2.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 120; pos += 1) {
-        servo1.write(pos);
-        delay(15);
-      }
-      for (pos = 0; pos <= 1; pos += 1) {
-        servo2.write(pos);
-        delay(15);
-      }
+      servo1.write(120);
+      servo2.write(0);
       count4 = 1;
     }
     else {
@@ -159,7 +117,7 @@ void loop() {
       motor.setSpeed(255);
     }
   }
-  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5)&& (value != 6)) {
+  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5) && (value != 6)) {
     motor.forward();
     motor.setSpeed(value);
   }
