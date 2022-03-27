@@ -58,7 +58,7 @@ void setup(void) {
   servo1.attach(pin_servo1);
   servo2.attach(pin_servo2);
   servo1.write(0);
-  servo1.write(0);
+  servo2.write(0);
 
 }
 
