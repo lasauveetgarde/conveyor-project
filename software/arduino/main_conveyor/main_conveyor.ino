@@ -52,7 +52,7 @@ void setup(void) {
   pinMode(PIN_TRIG2, OUTPUT);
   pinMode(PIN_ECHO2, INPUT);
   scale.begin(dataPin, clockPin);
-  scale.set_scale(-1100.0983);
+  scale.set_scale(-1380.0983);
   scale.tare();
 
   servo1.attach(pin_servo1);

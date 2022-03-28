@@ -24,7 +24,7 @@ WW = [0; 100];
 LL = [0; 20];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0;start_measurment1=0; cnt=0;...
-    measurement_end2 = 0; needspeed=1; i = 1; j=1; m=2; motorspeed=5.2333;
+    end_measurment = 0; needspeed=1; i = 1; j=1; m=2; motorspeed=5.2333; continue_measurment = 0;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -142,6 +142,7 @@ while (true)
     kb.Value=motorspeed;
     value_speed.Text=num2str(motorspeed);
     txa1.Value='nothing';
+    txa2.Value='nothing';
     lmp.Color = '#000000';
     
     if warningpress == 1
@@ -166,7 +167,7 @@ while (true)
             j=j+1;
         end
         
-        if (start_measurment == 1 && j>15)
+        if (start_measurment == 1 && j==16)
             m = m + 1;
             motorspeed=5.2333;
             
@@ -202,65 +203,77 @@ while (true)
         lenghttabl(i,1) = datatabl(i,3);
         if (lenghttabl(i,1) ~=0)
             cnt=cnt+1;
-            measurement_end2 = 1;
-        else
-            if measurement_end2 == 1
-                averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
-                cathetus= averagelen.*0.42./0.906307;
-                Objectlenght= cnt.*motorspeed/5.5-2.*cathetus;
-                if Objectlenght<0
-                    Objectlenght=0;
-                end
-                txa3.Value=num2str(Objectlenght);
-                usertabl{m,4}=txa3.Value;
-                if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1))&&(measurement_end2==1))
-                    txa6.Value  = ('Объект не той длины ');
-                    lmp4.Color = '#92000a';
-                else
-                    txa6.Value  = ('Объект той длины ');
-                    lmp4.Color = '#228b22';
-                end
+            continue_measurment = 1;
+        elseif lenghttabl(i,1) ==0 && continue_measurment == 1    
+            end_measurment = 1;
+            continue_measurment = 0;
+            averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
+            cathetus= averagelen.*0.42./0.906307;
+            Objectlenght= cnt.*motorspeed/5.5-2.*cathetus;
+            if Objectlenght<0
+                Objectlenght=0;
             end
-            measurement_end2 = 0;
+            txa3.Value=num2str(Objectlenght);
+            usertabl{m,4}=Objectlenght;
+            if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1))&&(end_measurment==1))
+                txa6.Value  = ('Объект не той длины ');
+                lmp4.Color = '#92000a';
+            else
+                txa6.Value  = ('Объект той длины ');
+                lmp4.Color = '#228b22';
+            end            
             cnt =0;
             Objectlenght =0;
         end
-        if start_measurment==1 && j>15
+        
+        if end_measurment
             
-            %не тот вес, цвет тот. первая серва в положение 45
-            if ((usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1)))&& (~isempty(colourfind))
-                write(s, 3, "string");
-                start_measurment=0;
-                j=1;
-            else
-                start_measurment=0;
-                j=1;
-            end
-            %не тот цвет, вес тот. вторая серва в положение 120
-            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<WW(2,1))&& (isempty(colourfind))
-                write(s, 4, "string");
-                start_measurment=0;
-                j=1;
-            else
-                start_measurment=0;
-                j=1;
-            end
-            % и вес и цвет тот. две сервы в 0
-            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<WW(2,1))&& (~isempty(colourfind))
+            % и вес и цвет тот, длина та. две сервы в 0
+            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<=WW(2,1))&& (~isempty(colourfind))...
+                    && (usertabl{m,4}>=LL(1,1))&&(usertabl{m,4}<=LL(2,1))
                 write(s, 5, "string");
                 start_measurment=0;
+                end_measurment = 0;
                 j=1;
             else
                 start_measurment=0;
+                end_measurment = 0;
                 j=1;
             end
-            % и вес и цвет не тот. первая серва в 120
-            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))&& (isempty(colourfind))
-                write(s, 6, "string");
+            %не тот вес, цвет тот, длина та. первая серва в положение 45
+            if ((usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1)))&& (~isempty(colourfind))...
+                    && (usertabl{m,4}>=LL(1,1))&&(usertabl{m,4}<=LL(2,1))
+                write(s, 3, "string");
                 start_measurment=0;
+                end_measurment = 0;
                 j=1;
             else
                 start_measurment=0;
+                end_measurment = 0;
+                j=1;
+            end
+            %не тот цвет, вес тот, длина не та. вторая серва в положение 120
+            if (usertabl{m,2}>=WW(1,1))&&(usertabl{m,2}<=WW(2,1))&& (isempty(colourfind))...
+                    && (usertabl{m,4}<LL(1,1))||(usertabl{m,4}>LL(2,1))
+                write(s, 4, "string");
+                start_measurment=0;
+                end_measurment = 0;
+                j=1;
+            else
+                start_measurment=0;
+                end_measurment = 0;
+                j=1;
+            end
+            % и вес и цвет не тот, длина не та. первая серва в 120
+            if (usertabl{m,2}<WW(1,1))||(usertabl{m,2}>WW(2,1))&& (isempty(colourfind))...
+                    && (usertabl{m,4}<LL(1,1))||(usertabl{m,4}>LL(2,1))
+                write(s, 6, "string");
+                start_measurment=0;
+                end_measurment = 0;
+                j=1;
+            else
+                start_measurment=0;
+                end_measurment = 0;
                 j=1;
             end
             
