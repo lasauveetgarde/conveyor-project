@@ -7,6 +7,8 @@ global needspeed
 global warningpress
 global motorspeed
 global all_color
+global usertabl
+global go
 
 delete(instrfind)
 s = serialport('COM4', 9600);
@@ -25,7 +27,7 @@ LL = [0; 20];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
     end_measurment1 = 0; end_measurment2 = 0; needspeed=1; i = 1; j=1; m=2;...
-    motorspeed=5.2333; continue_measurment = 0;
+    motorspeed=5.2333; continue_measurment = 0; go = 1;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -114,6 +116,15 @@ pan5 = uipanel(f,'Position',[0.53 0.6 0.3 0.1]);
 bt5=uicontrol(pan5,'style','pushbutton', 'String','Автомат. управление',...
     'CallBack', {@PushButton5, warningpress},...
     'Position', [1.6 1.7 164 38.79 ]);
+pan6 = uipanel(f,'Position',[0.53 0.2 0.3 0.1]);
+bt6=uicontrol(pan6,'style','pushbutton', 'String','file',...
+    'CallBack', {@PushButtonFile, usertabl},...
+    'Position', [1.6 1.7 164 38.79 ]);
+pan7 = uipanel(f,'Position',[0.53 0 0.3 0.1]);
+bt7=uicontrol(pan7,'style','pushbutton', 'String','стоп',...
+    'CallBack', {@PushButtonStop, go, fig},...
+    'Position', [1.6 1.7 164 38.79 ]);
+
 
 
 f2=figure('Name','Color pie', 'NumberTitle', 'Off','MenuBar', 'none');
@@ -130,11 +141,12 @@ colormap([0.857 0 0;
     0.982 0.668 0.826;
     ])
 
+
 write(s, 1, "string");
 pause(2)
 write(s, 1, "string");
 
-while (true)
+while (go)
     figure(f2);
     result_pie_color=pie(all_color);
     pie(ax1,all_color)
@@ -179,21 +191,21 @@ while (true)
             
             usertabl {m,1}=datestr(now,'HH:MM:SS');
             usertabl{m,2}=answer;
-            usertabl{m,3}=txa1.Value;
+            usertabl{m,3}=txa1.Value{1};
             %отображение цвета и его вывод
             if ((answer<WW(1,1)) || (answer>WW(2,1))&&(start_measurment==1))
-                txa4.Value  = ('Объект не того веса ');
+                txa5.Value  = ('Объект не того веса ');
                 lmp2.Color = '#92000a';
             else
-                txa4.Value  = ('Объект того веса ');
+                txa5.Value  = ('Объект того веса ');
                 lmp2.Color = '#228b22';
             end
             colourfind=find(indx==colour);
             if isempty(colourfind)
-                txa5.Value  = ('Объект не того цвета ');
+                txa4.Value  = ('Объект не того цвета ');
                 lmp3.Color = '#92000a';
             else
-                txa5.Value  = ('Объект того цвета ');
+                txa4.Value  = ('Объект того цвета ');
                 lmp3.Color = '#228b22';
             end
             write(s, 1, "string");
@@ -201,30 +213,32 @@ while (true)
         end
         
         lenghttabl(i,1) = datatabl(i,3);
-        if (lenghttabl(i,1) ~=0)
-            cnt=cnt+1;
-            continue_measurment = 1;
-        elseif lenghttabl(i,1) ==0 && continue_measurment == 1    
-            end_measurment2 = 1;
-            continue_measurment = 0;
-            averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
-            cathetus= averagelen.*0.42./0.906307;
-            Objectlenght= cnt.*motorspeed/5.5-2.*cathetus;
-            if Objectlenght<0
-                Objectlenght=0;
+        if end_measurment1
+            if (lenghttabl(i,1) ~=0)
+                cnt=cnt+1;
+                continue_measurment = 1;
+            elseif lenghttabl(i,1) ==0 && continue_measurment == 1    
+                end_measurment2 = 1;
+                continue_measurment = 0;
+                averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
+                cathetus= averagelen.*0.42./0.906307;
+                Objectlenght= cnt.*motorspeed/5.5-2.*cathetus;
+                if Objectlenght<0
+                    Objectlenght=0;
+                end
+                txa3.Value=num2str(Objectlenght);
+                usertabl{m,4}=Objectlenght;
+                if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1))&&(end_measurment2==1))
+                    txa6.Value  = ('Объект не той длины ');
+                    lmp4.Color = '#92000a';
+                else
+                    txa6.Value  = ('Объект той длины ');
+                    lmp4.Color = '#228b22';
+                end            
+                cnt =0;
+                Objectlenght =0;
+                fprintf('Покинул зону 2 в %s\n', datestr(now,'HH:MM:SS'));
             end
-            txa3.Value=num2str(Objectlenght);
-            usertabl{m,4}=Objectlenght;
-            if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1))&&(end_measurment2==1))
-                txa6.Value  = ('Объект не той длины ');
-                lmp4.Color = '#92000a';
-            else
-                txa6.Value  = ('Объект той длины ');
-                lmp4.Color = '#228b22';
-            end            
-            cnt =0;
-            Objectlenght =0;
-            fprintf('Покинул зону 2 в %s\n', datestr(now,'HH:MM:SS'));
         end
         
         if end_measurment2
@@ -258,9 +272,8 @@ while (true)
         end
     end
     i = i + 1;
-%     writecell(usertabl,'usertable.xls')
 end
-
+disp('перезвоните');
 
 function PushButton1(src,~)
 global needspeed
@@ -294,6 +307,21 @@ end
 function PushButton5(src,~,~)
 global warningpress
 warningpress=0;
+end
+
+function PushButtonFile(src, ~, usertabl)
+global usertabl
+writecell(usertabl,'usertable.xls')
+disp('я сохранил эту хуйню')
+end
+
+function PushButtonStop(src, ~, go, fig)
+global go
+go = 0;
+close all
+close(fig)
+disp('остановка')
+
 end
 
 function [Txcolor] = what_color (tabl,i)
@@ -350,3 +378,4 @@ elseif (fcolor==7)
     all_color(7)= all_color(7) + 1;
 end
 end
+
