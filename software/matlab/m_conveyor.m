@@ -147,8 +147,6 @@ pause(2)
 write(s, 1, "string");
 
 while (go)
-    figure(f2);
-    result_pie_color=pie(all_color);
     pie(ax1,all_color)
     data = read(s,28,"string");
     datatabl(i,:)=double(split(data))';
@@ -312,7 +310,7 @@ end
 function PushButtonFile(src, ~, usertabl)
 global usertabl
 writecell(usertabl,'usertable.xls')
-disp('я сохранил эту хуйню')
+disp('я сохранил')
 end
 
 function PushButtonStop(src, ~, go, fig)
