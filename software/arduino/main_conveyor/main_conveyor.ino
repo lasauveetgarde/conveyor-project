@@ -14,6 +14,7 @@ int count1 = 0;
 int count2 = 0;
 int count3 = 0;
 int count4 = 0;
+int count5 = 0;
 int pos = 0;
 
 #define PIN_TRIG1 12
@@ -117,7 +118,18 @@ void loop() {
       motor.setSpeed(255);
     }
   }
-  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5) && (value != 6)) {
+  if (value == 7) {
+    if (count5 == 0) {
+      servo1.write(0);
+      servo2.write(45);
+      count5 = 1;
+    }
+    else {
+      motor.forward();
+      motor.setSpeed(255);
+    }
+  }
+  if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5) && (value != 6)&& (value != 7)) {
     motor.forward();
     motor.setSpeed(value);
   }
@@ -128,6 +140,7 @@ void loop() {
     count2 = 0;
     count3 = 0;
     count4 = 0;
+    count5 = 0;
   }
 
   uint16_t red, green, blue, clear;
