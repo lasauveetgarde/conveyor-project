@@ -1,4 +1,3 @@
-
 clc
 close all
 clear all
@@ -37,7 +36,7 @@ hsvtabl = zeros(3); %%массив для записи значений цвет
 lenghttabl=zeros(2); %%массив для записи значений длины предмета
 weighttabl=zeros(1); %%массив для записи значений массы предмета
 colorval = zeros(1);
-usertabl = cell(5);
+usertabl = cell(4);
 usertabl(:,:) = {0};
 usertabl {1,1}='Time';
 usertabl {1,2}='Weight';
@@ -194,6 +193,7 @@ end
 function PushButtonFile(~, filename)
 global usertabl
 global f2
+myprogress1
 delete(filename)
 writecell(usertabl,filename, 'WriteMode','overwritesheet')
 xlswritefig(f2,filename,'Sheet1','G2')

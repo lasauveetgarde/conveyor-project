@@ -5,6 +5,7 @@ write(s, 1, "string");
 
 while (go)
     pie(ax1,all_color)
+    title('Color pie chart')
     data = read(s,28,"string");
     datatabl(i,:)=double(split(data))';
     kb.Value=motorspeed;
