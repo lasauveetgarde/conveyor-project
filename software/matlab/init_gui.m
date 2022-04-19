@@ -16,7 +16,7 @@ s = serialport('COM4', 9600);
 
 % colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
 % [indx,tf] = listdlg('ListString',colourlist);
-indx = [1, 2, 5, 6, 7];
+indx = [1, 2, 6, 7];
 
 % ab = inputdlg({'Input min weight','Input max weight'},'Ввод данных', [1 50]);
 % WW = str2double(ab);
@@ -39,9 +39,9 @@ colorval = zeros(1);
 usertabl = cell(4);
 usertabl(:,:) = {0};
 usertabl {1,1}='Time';
-usertabl {1,2}='Weight';
+usertabl {1,2}='Lenght';
 usertabl {1,3}='Color';
-usertabl {1,4}='Lenght';
+usertabl {1,4}='Weight';
 
 stopdistance = zeros(1);
 all_color = zeros(1,7);

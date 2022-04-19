@@ -53,7 +53,7 @@ void setup(void) {
   pinMode(PIN_TRIG2, OUTPUT);
   pinMode(PIN_ECHO2, INPUT);
   scale.begin(dataPin, clockPin);
-  scale.set_scale(-1380.0983);
+  scale.set_scale(1975.0983);
   scale.tare();
 
   servo1.attach(pin_servo1);
@@ -70,7 +70,7 @@ void loop() {
   }
 
   if (value == 1) {
-    motor.forward();
+    motor.backward();
     motor.setSpeed(255);
   }
   if (value == 3) {
@@ -92,7 +92,7 @@ void loop() {
       count2 = 1;
     }
     else {
-      motor.forward();
+      motor.backward();
       motor.setSpeed(255);
     }
   }
@@ -103,7 +103,7 @@ void loop() {
       count3 = 1;
     }
     else {
-      motor.forward();
+      motor.backward();
       motor.setSpeed(255);
     }
   }
@@ -114,7 +114,7 @@ void loop() {
       count4 = 1;
     }
     else {
-      motor.forward();
+      motor.backward();
       motor.setSpeed(255);
     }
   }
@@ -125,12 +125,12 @@ void loop() {
       count5 = 1;
     }
     else {
-      motor.forward();
+      motor.backward();
       motor.setSpeed(255);
     }
   }
   if ((value != 1) && (value != 0) && (value != 2) && (value != 3) && (value != 4) && (value != 5) && (value != 6)&& (value != 7)) {
-    motor.forward();
+    motor.backward();
     motor.setSpeed(value);
   }
 
@@ -173,14 +173,14 @@ void loop() {
     w1 = w2;
     w2 = scale.get_units();
   }
-  if (w1 < 0.5)
+  if ((w1 < 0.5) || (w1>1100))
   {
-    Serial.print(100);
+    Serial.print(112);
     Serial.print(" ");
   }
   else
   {
-    w1 = w1 + 100;
+    w1 = w1 + 110;
     Serial.print(w1);
     Serial.print(" ");
   }
@@ -194,7 +194,7 @@ void loop() {
   TimeOfImpulse = pulseIn(PIN_ECHO1, HIGH);
   DistanceToObject = TimeOfImpulse * 0.034 / 2;
 
-  if (DistanceToObject <= 10)
+  if (DistanceToObject <= 7)
   {
     Serial.print(1);
     Serial.print(" ");
@@ -219,7 +219,7 @@ void loop() {
   imptime = pulseIn(PIN_ECHO2, HIGH);
   stopdistance = imptime * 0.034 / 2;
 
-  if ((stopdistance >= 99) || (stopdistance <= 10))
+  if ((stopdistance >= 50) || (stopdistance <= 10))
   {
     Serial.print(99);
     Serial.println(" ");
