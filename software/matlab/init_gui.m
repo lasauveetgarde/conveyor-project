@@ -14,13 +14,13 @@ global f2
 delete(instrfind)
 s = serialport('COM4', 9600);
 
-% colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Pink'};
+% colourlist = {'Red','Yellow','Light blue','Blue','Green','Purple','Orange'};
 % [indx,tf] = listdlg('ListString',colourlist);
 indx = [1, 2, 6, 7];
 
 % ab = inputdlg({'Input min weight','Input max weight'},'Ввод данных', [1 50]);
 % WW = str2double(ab);
-WW = [0; 100];
+WW = [0; 25];
 
 % cd = inputdlg({'Input min lenght','Input max lenght'},'Ввод данных', [1 50]);
 % LL = str2double(cd);
@@ -36,12 +36,13 @@ hsvtabl = zeros(3); %%массив для записи значений цвет
 lenghttabl=zeros(2); %%массив для записи значений длины предмета
 weighttabl=zeros(1); %%массив для записи значений массы предмета
 colorval = zeros(1);
-usertabl = cell(4);
+usertabl = cell(5);
 usertabl(:,:) = {0};
-usertabl {1,1}='Time';
-usertabl {1,2}='Lenght';
-usertabl {1,3}='Color';
-usertabl {1,4}='Weight';
+usertabl {1,1}='TIME';
+usertabl {1,2}='LENGHT';
+usertabl {1,3}='COLOR';
+usertabl {1,4}='WEIGHT';
+usertabl {1,5}='SORTING SOLUTION';
 
 stopdistance = zeros(1);
 all_color = zeros(1,7);
@@ -147,7 +148,7 @@ colormap([0.857 0 0;
     0 0.4470 0.7410;
     0.4660 0.6740 0.1880;
     0.4940 0.1840 0.5560;
-    0.982 0.668 0.826;
+    0.957 0.348 0;
     ])
 
 function PushButton1(~,~)

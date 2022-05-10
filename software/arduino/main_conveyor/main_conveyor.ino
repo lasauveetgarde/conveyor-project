@@ -3,7 +3,6 @@
 #include "HX711.h"
 #include <L298N.h>
 HX711 scale;
-
 #include <Servo.h>
 Servo servo1;
 Servo servo2;
@@ -58,9 +57,8 @@ void setup(void) {
 
   servo1.attach(pin_servo1);
   servo2.attach(pin_servo2);
-  servo1.write(0);
+  servo1.write(180);
   servo2.write(0);
-
 }
 
 void loop() {
@@ -80,15 +78,15 @@ void loop() {
       count1 = 1;
     }
     else {
-      motor.forward();
-      motor.setSpeed(255);
+     motor.backward();
+     motor.setSpeed(255);
     }
   }
 
   if (value == 4) {
     if (count2 == 0) {
       servo2.write(120);
-      servo1.write(0);
+      servo1.write(180);
       count2 = 1;
     }
     else {
@@ -98,7 +96,7 @@ void loop() {
   }
   if (value == 5) {
     if (count3 == 0) {
-      servo1.write(0);
+      servo1.write(180);
       servo2.write(0);
       count3 = 1;
     }
@@ -120,8 +118,8 @@ void loop() {
   }
   if (value == 7) {
     if (count5 == 0) {
-      servo1.write(0);
-      servo2.write(45);
+      servo1.write(180);
+      servo2.write(75);
       count5 = 1;
     }
     else {
@@ -175,12 +173,12 @@ void loop() {
   }
   if ((w1 < 0.5) || (w1>1100))
   {
-    Serial.print(112);
+    Serial.print(115);
     Serial.print(" ");
   }
   else
   {
-    w1 = w1 + 110;
+    w1 = w1 + 115;
     Serial.print(w1);
     Serial.print(" ");
   }
@@ -219,7 +217,7 @@ void loop() {
   imptime = pulseIn(PIN_ECHO2, HIGH);
   stopdistance = imptime * 0.034 / 2;
 
-  if ((stopdistance >= 50) || (stopdistance <= 10))
+  if ((stopdistance >= 60) || (stopdistance <= 10))
   {
     Serial.print(99);
     Serial.println(" ");

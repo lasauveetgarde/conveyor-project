@@ -21,8 +21,9 @@ while (go)
             if (lenghttabl(i,1) ~=0)
                 cnt=cnt+1;
                 continue_measurment = 1;
-                txa1.Value='nothing';
-                txa2.Value='nothing';
+                txa1.Value=' ';
+                txa2.Value=' ';
+                txa3.Value=' ';
                 lmp.Color = '#000000';
                 txa5.Value  = ('');
                 lmp3.Color = '#000000';
@@ -30,13 +31,14 @@ while (go)
                 lmp2.Color = '#000000';
                 txa6.Value  = ('');
                 lmp4.Color = '#000000';
+                write(s, 5, "string");
             elseif lenghttabl(i,1) ==0 && continue_measurment == 1
                 m = m + 1;
                 end_measurment1 = 1;
                 continue_measurment = 0;
                 averagelen = sum(lenghttabl ((i - cnt): length(lenghttabl))) / cnt;
                 cathetus= averagelen.*0.42./0.906307;
-                Objectlenght= (cnt.*motorspeed/2-2.*cathetus)/5.5;
+                Objectlenght= (cnt.*motorspeed/2-2.*cathetus)/8;
                 if Objectlenght<0
                     Objectlenght=0;
                 end
@@ -56,18 +58,18 @@ while (go)
             end
         end
         
+        weighttabl(j) = datatabl(i,1)-115;
         if end_measurment1          
-            if ((stopdistance(i)>=48-Objectlenght/2)&&(stopdistance(i)<=49-Objectlenght/2)&& (start_measurment==0))
+            if ((stopdistance(i)<=29)&&( weighttabl(j)>20))
                 start_measurment = 1;
                 write(s, 2, "string");
                 motorspeed=0;
             end
             
-            if ((start_measurment == 1)&&(j<=15))
-                weighttabl(j) = datatabl(i,1)-112;
-                rgbtabl(j, 1) = (datatabl(i,4)-112)./256; %%перевод в диапазон значений 0-1
-                rgbtabl(j, 2)= (datatabl(i,5)-112)./256;
-                rgbtabl(j, 3)= (datatabl(i,6)-112)./256;
+            if ((start_measurment == 1)&&(j<=10))
+                rgbtabl(j, 1) = (datatabl(i,4)-100)./256; %%перевод в диапазон значений 0-1
+                rgbtabl(j, 2)= (datatabl(i,5)-100)./256;
+                rgbtabl(j, 3)= (datatabl(i,6)-100)./256;
                 hsvtabl(j,:)= rgb2hsv(rgbtabl(j, :)); %%перевод из RGB в HSV
                 [colour]=what_color(hsvtabl,j);
                 colorval(j) = colour;
@@ -77,8 +79,8 @@ while (go)
                 end_measurment2 = 1;
                 motorspeed=5.2333;
                 
-                answer = sum(weighttabl)/15;
-                weightanswer=sprintf(num2str(sum(weighttabl)/15));
+                answer = sum(weighttabl)/10;
+                weightanswer=sprintf(num2str(sum(weighttabl)/10));
                 txa2.Value=weightanswer;   
                 truecolor = mode(colorval);
                 [txa1.Value,lmp.Color]=true_color(truecolor); 
@@ -112,25 +114,30 @@ while (go)
             if (usertabl{m,4}>=WW(1,1))&&(usertabl{m,4}<=WW(2,1))&& (~isempty(colourfind))...
                     && (usertabl{m,2}>=LL(1,1))&&(usertabl{m,2}<=LL(2,1))
                 write(s, 5, "string");
+                usertabl {m,5}='Все параметры верны';
                 
                 %не тот вес, первая серва в положение 45
             elseif ((usertabl{m,4}<WW(1,1))||(usertabl{m,4}>WW(2,1)))&& (~isempty(colourfind))...
                     && (usertabl{m,2}>=LL(1,1))&&(usertabl{m,2}<=LL(2,1))
                 write(s, 3, "string");
+                usertabl {m,5}='Не тот вес предмета';
                 
                 %не тот цвет, вторая серва в положение 120
             elseif (usertabl{m,4}>=WW(1,1))&&(usertabl{m,4}<=WW(2,1))&& (isempty(colourfind))...
                     && (usertabl{m,2}>=LL(1,1))&&(usertabl{m,2}<=LL(2,1))
                 write(s, 4, "string");
+                usertabl {m,5}='Не тот цает предмета';
                 
                 % длина не та, первая серва в 120
             elseif (usertabl{m,4}>=WW(1,1))&&(usertabl{m,4}<=WW(2,1))&& (~isempty(colourfind))...
                     && ((usertabl{m,2}<LL(1,1))||(usertabl{m,2}>LL(2,1)))
                 write(s, 6, "string");
+                usertabl {m,5}='Не та длина предмета';
             else
                 % вторая серва в положение 45
                 write(s, 7, "string");
                 disp('Не могу принять решение');
+                usertabl {m,5}='Несколько параметров не совпадает';
             end
             start_measurment = 0;
             end_measurment1 = 0;
@@ -144,19 +151,19 @@ end
 close_windows(fig);
 
 function [Txcolor] = what_color (tabl,i)
-if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.0472))
+if ((tabl(i, 1)>0) && (tabl(i, 1)<=0.035))
     Txcolor=1;
-elseif ((tabl(i, 1)>0.0472) && (tabl(i, 1)<=0.186))
+elseif ((tabl(i, 1)>0.1) && (tabl(i, 1)<=0.186))
     Txcolor=2;
 elseif ((tabl(i, 1)>0.186) && (tabl(i, 1)<=0.419))
     Txcolor=5;
 elseif ((tabl(i, 1)>0.419) && (tabl(i, 1)<=0.538))
     Txcolor=3;
-elseif ((tabl(i, 1)>0.538) && (tabl(i, 1)<=0.727))
+elseif ((tabl(i, 1)>0.538) && (tabl(i, 1)<=0.7))
     Txcolor=4;
-elseif ((tabl(i, 1)>0.727) && (tabl(i, 1)<=0.805))
+elseif ((tabl(i, 1)>0.7) && (tabl(i, 1)<=0.945))
     Txcolor=6;
-elseif ((tabl(i, 1)>0.805) && (tabl(i, 1)<=0.966))
+elseif ((tabl(i, 1)>0.035) && (tabl(i, 1)<=0.1))
     Txcolor=7;
 elseif  (tabl(i, 1)<=1)
     Txcolor=1;
@@ -192,8 +199,8 @@ elseif (fcolor==6)
     lmpColor = '#7E2F8E';
     all_color(6)= all_color(6) + 1;
 elseif (fcolor==7)
-    Value='pink color';
-    lmpColor = '#ffc0cb';
+    Value='orange color';
+    lmpColor = '#ff8700';
     all_color(7)= all_color(7) + 1;
 end
 end
