@@ -1,49 +1,32 @@
 #include <Servo.h>
-Servo servo1;
-Servo servo2;
-const int pin_servo1 = 9;
-const int pin_servo2 = 10;
-int pos = 0;
-int count = 0;
 
-void setup(void) {
+// создаём объекты для управления сервоприводами
+Servo myservo1;
+Servo myservo2;
+ 
+void setup() 
+{
+  // подключаем сервоприводы к выводам 11 и 12
+  myservo1.attach(9);
+  myservo2.attach(10);
 
-  Serial.begin(9600);
-  servo1.attach(pin_servo1);
-  servo2.attach(pin_servo2);
+} 
+ 
+void loop() 
+{
+  // устанавливаем сервоприводы в серединное положение
+  myservo1.write(90);
+    delay(500);
+  myservo2.write(90);
+  delay(500);
+  // устанавливаем сервоприводы в крайнее левое положение  
+  myservo1.write(0);
+    delay(500);
+  myservo2.write(0);
+  delay(500);
+  // устанавливаем сервоприводы в крайнее правое положение
+  myservo1.write(180);
+    delay(500);
+  myservo2.write(180);
+  delay(500);
 }
-
-void loop() {
-
-  for (pos = 0; pos <= 180; pos += 1) {
-    servo1.write(pos);
-    delay (15);
-  }
-  for (pos = 180; pos >= 0; pos -= 1) {
-    servo1.write(pos);
-    delay (15);
-  }
-  for (pos = 0; pos <= 180; pos += 1) {
-    servo2.write(pos);
-    delay (15);
-  }
-  for (pos = 180; pos >= 0; pos -= 1) {
-    servo2.write(pos);
-    delay (15);
-  }
-
-
-  //    for (pos = 0; pos <= 30; pos += 1) {
-  //      servo1.write(pos);
-  //      delay (15);
-  //    }
-  //
-  //    for (pos = 0; pos <= 10; pos += 1) {
-  //      servo2.write(pos);
-  //      delay (15);
-  //    }
-
-
-}
-
-//  Serial.print(count);
