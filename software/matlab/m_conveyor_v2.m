@@ -53,7 +53,6 @@ while (go)
                     lmp4.Color = '#228b22';
                 end
                 cnt =0;
-                
                 fprintf('Покинул зону 1 в %s\n', datestr(now,'HH:MM:SS'));
             end
         end
