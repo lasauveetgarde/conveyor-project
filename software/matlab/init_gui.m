@@ -43,6 +43,7 @@ usertabl {1,2}='LENGHT';
 usertabl {1,3}='COLOR';
 usertabl {1,4}='WEIGHT';
 usertabl {1,5}='SORTING SOLUTION';
+usertabl{2,1}=datestr(now+hours(2),'HH:MM:SS');
 
 stopdistance = [35 35 35 35 35 35 35];
 viborka = zeros (1,7);
