@@ -27,7 +27,7 @@ WW = [0; 25];
 LL = [0; 20];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
-    end_measurment1 = 0; end_measurment2 = 0; needspeed=1; i = 1; j=1; m=2;...
+    end_measurment1 = 0; end_measurment2 = 0; needspeed=1; i = 1; j=1; m=2; z=1;...
     motorspeed=5.2333; continue_measurment = 0; go = 1;
 
 datatabl=zeros(8); %%все данные с USB-порта
@@ -44,7 +44,8 @@ usertabl {1,3}='COLOR';
 usertabl {1,4}='WEIGHT';
 usertabl {1,5}='SORTING SOLUTION';
 
-stopdistance = zeros(1);
+stopdistance = [35 35 35 35 35 35 35];
+viborka = zeros (1,7);
 all_color = zeros(1,7);
 data="";
 filename = 'usertable.xlsx';

@@ -217,7 +217,7 @@ void loop() {
   imptime = pulseIn(PIN_ECHO2, HIGH);
   stopdistance = imptime * 0.034 / 2;
 
-  if ((stopdistance >= 60) || (stopdistance <= 10))
+  if ((stopdistance >= 80) || (stopdistance <= 10))
   {
     Serial.print(99);
     Serial.println(" ");
