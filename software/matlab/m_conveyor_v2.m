@@ -44,6 +44,7 @@ while (go)
             end
             txa3.Value=num2str(Objectlenght);
             usertabl {z,1}=datestr(now,'HH:MM:SS');
+            usertabl{z+1,1}=datestr(now+hours(2),'HH:MM:SS');
             usertabl{z,2}=Objectlenght;
             if ((Objectlenght<LL(1,1)) || (Objectlenght>LL(2,1)))
                 txa6.Value  = ('Объект не той длины ');
@@ -61,9 +62,14 @@ while (go)
         if end_measurment2 ==0
             current_time = datetime('now');
             object_time = datetime(usertabl{m,1},'InputFormat','HH:mm:ss');
-            if (current_time - object_time) >= seconds(5.251)
+            if (current_time - object_time) >= seconds(12+cnt_stops*0.35)
                 start_measurment = 1;
                 write(s, 2, "string");
+                if cnt_stops<3
+                    cnt_stops=cnt_stops+1;
+                else
+                    cnt_stops = 3;
+                end
                 motorspeed=0;
             end
             if ((start_measurment == 1)&&(j<=10))

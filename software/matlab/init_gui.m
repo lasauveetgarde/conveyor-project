@@ -27,8 +27,8 @@ WW = [0; 25];
 LL = [0; 20];
 
 k=1; total=0; colour=0; coun=1; sumweight=0; start_measurment = 0; cnt=0;...
-    end_measurment1 = 0; end_measurment2 = 0; needspeed=1; i = 1; j=1; m=2; z=1;...
-    motorspeed=5.2333; continue_measurment = 0; go = 1;
+    end_measurment1 = 0; end_measurment2 = 0; needspeed=1; i = 1; j=1; m=2; z=1; x=1;...
+    motorspeed=5.2333; continue_measurment = 0; go = 1; cnt_stops=0;
 
 datatabl=zeros(8); %%все данные с USB-порта
 rgbtabl = zeros(3); %%массив для записи значений цвета в RGB в диапазоне 0-1
@@ -44,6 +44,8 @@ usertabl {1,3}='COLOR';
 usertabl {1,4}='WEIGHT';
 usertabl {1,5}='SORTING SOLUTION';
 usertabl{2,1}=datestr(now+hours(2),'HH:MM:SS');
+object_time = datetime('now') + hours(2);
+object_time2 = datetime('now') + hours(2);
 
 stopdistance = [35 35 35 35 35 35 35];
 viborka = zeros (1,7);
